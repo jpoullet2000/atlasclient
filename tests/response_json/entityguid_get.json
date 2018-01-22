@@ -1,0 +1,97 @@
+{
+  "entity" : {
+    "guid" : "8bbea92b-d98c-4613-ae6e-1a9d0b4f344b",
+    "status" : "DELETED",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "relationshipAttributes" : {
+      "property1" : { },
+      "property2" : { }
+    },
+    "classifications" : [ {
+      "typeName" : "classtype1",
+      "attributes" : {
+        "property1" : { "name": "haha" },
+        "property2" : { }
+      }
+    }, {
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    } ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  },
+  "referredEntities" : {
+    "property1" : {
+      "guid" : "8bbea92b-d98c-4613-ae6e-1a9d0b4f344c",
+      "status" : "DELETED",
+      "createdBy" : "...",
+      "updatedBy" : "...",
+      "createTime" : 12345,
+      "updateTime" : 12345,
+      "version" : 12345,
+      "relationshipAttributes" : {
+        "property1" : { },
+        "property2" : { }
+      },
+      "classifications" : [ {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      }, {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      } ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    },
+    "property2" : {
+      "guid" : "8bbea92b-d98c-4613-ae6e-1a9d0b4f344e",
+      "status" : "ACTIVE",
+      "createdBy" : "...",
+      "updatedBy" : "...",
+      "createTime" : 12345,
+      "updateTime" : 12345,
+      "version" : 12345,
+      "relationshipAttributes" : {
+        "property1" : { },
+        "property2" : { }
+      },
+      "classifications" : [ {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      }, {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      } ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }
+  }
+}

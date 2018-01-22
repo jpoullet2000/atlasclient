@@ -1,0 +1,167 @@
+{
+  "mutatedEntities" : {
+    "property1" : [ {
+      "guid" : "8bbea92b-d98c-4613-ae6e-1a9d0b4f344b",
+      "status" : "ACTIVE",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }, {
+      "guid" : "...",
+      "status" : "DELETED",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    } ],
+    "property2" : [ {
+      "guid" : "...",
+      "status" : "ACTIVE",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }, {
+      "guid" : "...",
+      "status" : "ACTIVE",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    } ]
+  },
+  "guidAssignments" : {
+    "property1" : "...",
+    "property2" : "..."
+  },
+  "createdEntities" : [ {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  }, {
+    "guid" : "...",
+    "status" : "DELETED",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  } ],
+  "updatedEntities" : [ {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  }, {
+    "guid" : "...",
+    "status" : "DELETED",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  } ],
+  "partialUpdatedEntities" : [ {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  }, {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  } ],
+  "deletedEntities" : [ {
+    "guid" : "...",
+    "status" : "DELETED",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  }, {
+    "guid" : "...",
+    "status" : "DELETED",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  } ],
+  "firstEntityCreated" : {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  },
+  "firstEntityUpdated" : {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  },
+  "firstEntityPartialUpdated" : {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  }
+}
