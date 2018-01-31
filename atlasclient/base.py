@@ -234,7 +234,7 @@ class QueryableModelCollection(ModelCollection):
         """The url for this collection."""
         if self.parent is None:
             # TODO: differing API Versions?
-            pieces = [self.client.base_url, 'api', 'v2']
+            pieces = [self.client.base_url, 'api', 'atlas', 'v2']
         else:
             pieces = [self.parent.url]
 
@@ -245,6 +245,7 @@ class QueryableModelCollection(ModelCollection):
         """Load the collection from the server, if necessary."""
         if not self._is_inflated:
             self.check_version()
+            import pdb; pdb.set_trace()
             self.load(self.client.get(self.url, params=self._filter))
 
         self._is_inflated = True
@@ -282,13 +283,19 @@ class QueryableModelCollection(ModelCollection):
                 self._models.append(model)
         else: 
             self._models = []
-            for item in response:
-                model = self.model_class(
-                    self,
-                    href=item.get('href')  #  or self.parent._href
-                )
-                model.load(item)
-                self._models.append(model)
+            if isinstance(response, dict):
+                for key in response.keys():
+                    model = self.model_class(self, href='')
+                    model.load(response[key])
+                    self._models.append(model)
+            else:
+                for item in response:
+                    model = self.model_class(
+                            self,
+                            href=item.get('href')  #  or self.parent._href
+                            )
+                    model.load(item)
+                    self._models.append(model)
 
 
     def create(self, *args, **kwargs):
@@ -611,6 +618,9 @@ class QueryableModel(Model):
     def _generate_input_dict(self, **kwargs):
         if self.data_key:
             data = { self.data_key: {}}
+            if len(kwargs) == 0:
+                    data = self._data
+                    return data
             for field in kwargs:
                 if field in self.fields:
                     data[self.data_key][field] = kwargs[field]
@@ -625,7 +635,7 @@ class QueryableModel(Model):
         """The load method parses the raw JSON response from the server.
 
         Most models are not returned in the main response body, but in a key
-        such as 'Clusters', defined by the 'data_key' attribute on the class.
+        such as 'entity', defined by the 'data_key' attribute on the class.
         Also, related objects are often returned and can be used to pre-cache
         related model objects without having to contact the server again.  This
         method handles all of those cases.

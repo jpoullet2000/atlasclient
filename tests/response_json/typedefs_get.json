@@ -1,0 +1,401 @@
+{
+  "enumDefs" : [ {
+    "elementDefs" : [ {
+      "value" : "...",
+      "description" : "...",
+      "ordinal" : 12345
+    }, {
+      "value" : "...",
+      "description" : "...",
+      "ordinal" : 12345
+    } ],
+    "defaultValue" : "...",
+    "category" : "ENUM",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  }, {
+    "elementDefs" : [ {
+      "value" : "...",
+      "description" : "...",
+      "ordinal" : 12345
+    }, {
+      "value" : "...",
+      "description" : "...",
+      "ordinal" : 12345
+    } ],
+    "defaultValue" : "...",
+    "category" : "ENUM",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  } ],
+  "structDefs" : [ {
+    "attributeDefs" : [ {
+      "name" : "attributeName1",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SET",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "attributeName2",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SET",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "STRUCT",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  }, {
+    "attributeDefs" : [ {
+      "name" : "attributeName3",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "LIST",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "attributeName4",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "LIST",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "OBJECT_ID_TYPE",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  } ],
+  "classificationDefs" : [ {
+    "superTypes" : [ "...", "..." ],
+    "attributeDefs" : [ {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SET",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "LIST",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "CLASSIFICATION",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  }, {
+    "superTypes" : [ "...", "..." ],
+    "attributeDefs" : [ {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "LIST",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SINGLE",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "OBJECT_ID_TYPE",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  } ],
+  "entityDefs" : [ {
+    "superTypes" : [ "...", "..." ],
+    "attributeDefs" : [ {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SET",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "LIST",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "ENTITY",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  }, {
+    "superTypes" : [ "...", "..." ],
+    "attributeDefs" : [ {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SINGLE",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SET",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "PRIMITIVE",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  } ],
+  "relationshipDefs" : [ {
+    "relationshipCategory" : "COMPOSITION",
+    "propagateTags" : "TWO_TO_ONE",
+    "endDef1" : {
+      "type" : "...",
+      "name" : "...",
+      "isContainer" : true,
+      "cardinality" : "SET",
+      "isLegacyAttribute" : true
+    },
+    "endDef2" : {
+      "type" : "...",
+      "name" : "...",
+      "isContainer" : true,
+      "cardinality" : "LIST",
+      "isLegacyAttribute" : true
+    },
+    "relationshipLabel" : "...",
+    "attributeDefs" : [ {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SET",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SINGLE",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "STRUCT",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  }, {
+    "relationshipCategory" : "ASSOCIATION",
+    "propagateTags" : "NONE",
+    "endDef1" : {
+      "type" : "...",
+      "name" : "...",
+      "isContainer" : true,
+      "cardinality" : "SET",
+      "isLegacyAttribute" : true
+    },
+    "endDef2" : {
+      "type" : "...",
+      "name" : "...",
+      "isContainer" : true,
+      "cardinality" : "SINGLE",
+      "isLegacyAttribute" : true
+    },
+    "relationshipLabel" : "...",
+    "attributeDefs" : [ {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SINGLE",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    }, {
+      "name" : "...",
+      "typeName" : "...",
+      "isOptional" : true,
+      "cardinality" : "SINGLE",
+      "valuesMinCount" : 12345,
+      "valuesMaxCount" : 12345,
+      "isUnique" : true,
+      "isIndexable" : true,
+      "defaultValue" : "...",
+      "constraints" : [ { }, { } ]
+    } ],
+    "category" : "CLASSIFICATION",
+    "guid" : "...",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "name" : "...",
+    "description" : "...",
+    "typeVersion" : "...",
+    "options" : {
+      "property1" : "...",
+      "property2" : "..."
+    }
+  } ],
+  "empty" : true
+}
+              

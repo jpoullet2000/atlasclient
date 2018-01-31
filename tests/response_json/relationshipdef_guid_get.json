@@ -1,0 +1,81 @@
+{
+  "relationshipCategory" : "ASSOCIATION",
+  "propagateTags" : "NONE",
+  "endDef1" : {
+    "type" : "...",
+    "name" : "...",
+    "isContainer" : true,
+    "cardinality" : "SINGLE",
+    "isLegacyAttribute" : true
+  },
+  "endDef2" : {
+    "type" : "...",
+    "name" : "...",
+    "isContainer" : true,
+    "cardinality" : "LIST",
+    "isLegacyAttribute" : true
+  },
+  "relationshipLabel" : "...",
+  "attributeDefs" : [ {
+    "name" : "...",
+    "typeName" : "...",
+    "isOptional" : true,
+    "cardinality" : "LIST",
+    "valuesMinCount" : 12345,
+    "valuesMaxCount" : 12345,
+    "isUnique" : true,
+    "isIndexable" : true,
+    "defaultValue" : "...",
+    "constraints" : [ {
+      "type" : "...",
+      "params" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }, {
+      "type" : "...",
+      "params" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    } ]
+  }, {
+    "name" : "...",
+    "typeName" : "...",
+    "isOptional" : true,
+    "cardinality" : "SET",
+    "valuesMinCount" : 12345,
+    "valuesMaxCount" : 12345,
+    "isUnique" : true,
+    "isIndexable" : true,
+    "defaultValue" : "...",
+    "constraints" : [ {
+      "type" : "...",
+      "params" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }, {
+      "type" : "...",
+      "params" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    } ]
+  } ],
+  "category" : "CLASSIFICATION",
+  "guid" : "...",
+  "createdBy" : "...",
+  "updatedBy" : "...",
+  "createTime" : 12345,
+  "updateTime" : 12345,
+  "version" : 12345,
+  "name" : "...",
+  "description" : "...",
+  "typeVersion" : "...",
+  "options" : {
+    "property1" : "...",
+    "property2" : "..."
+  }
+}
+    

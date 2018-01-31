@@ -1,0 +1,105 @@
+{
+  "queryType" : "GREMLIN",
+  "searchParameters" : {
+    "query" : "...",
+    "typeName" : "...",
+    "classification" : "...",
+    "excludeDeletedEntities" : true,
+    "limit" : 12345,
+    "offset" : 12345,
+    "entityFilters" : {
+      "attributeName" : "...",
+      "operator" : "GT",
+      "attributeValue" : "...",
+      "condition" : "OR",
+      "criterion" : [ { }, { } ]
+    },
+    "tagFilters" : {
+      "attributeName" : "...",
+      "operator" : "LIKE",
+      "attributeValue" : "...",
+      "condition" : "AND",
+      "criterion" : [ { }, { } ]
+    },
+    "attributes" : [ "...", "..." ]
+  },
+  "queryText" : "...",
+  "type" : "...",
+  "classification" : "...",
+  "entities" : [ {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  }, {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "displayText" : "...",
+    "classificationNames" : [ "...", "..." ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  } ],
+  "attributes" : {
+    "name" : [ "...", "..." ],
+    "values" : [ ]
+  },
+  "fullTextResult" : [ {
+    "entity" : {
+      "guid" : "...",
+      "status" : "DELETED",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    },
+    "score" : 12345.0
+  }, {
+    "entity" : {
+      "guid" : "...",
+      "status" : "ACTIVE",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    },
+    "score" : 12345.0
+  } ],
+  "referredEntities" : {
+    "property1" : {
+      "guid" : "...",
+      "status" : "DELETED",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    },
+    "property2" : {
+      "guid" : "...",
+      "status" : "ACTIVE",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }
+  }
+}

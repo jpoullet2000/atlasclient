@@ -1,0 +1,36 @@
+{
+  "baseEntityGuid" : "...",
+  "guidEntityMap" : {
+    "property1" : {
+      "guid" : "...",
+      "status" : "DELETED",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    },
+    "property2" : {
+      "guid" : "...",
+      "status" : "ACTIVE",
+      "displayText" : "...",
+      "classificationNames" : [ "...", "..." ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }
+  },
+  "relations" : [ {
+    "fromEntityId" : "...",
+    "toEntityId" : "..."
+  }, {
+    "fromEntityId" : "...",
+    "toEntityId" : "..."
+  } ],
+  "lineageDirection" : "BOTH",
+  "lineageDepth" : 12345
+}
