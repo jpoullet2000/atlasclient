@@ -1,0 +1,7 @@
+{
+  "tests/test_models.py::TestDiscoveryREST": true, 
+  "tests/test_models.py::TestEntityREST": true, 
+  "tests/test_models.py::TestLineageGuid": true, 
+  "tests/test_models.py::TestRelationshipREST": true, 
+  "tests/test_models.py::TestTypeDefs": true
+}

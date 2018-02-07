@@ -1,6 +1,6 @@
-===========
-atlasclient
-===========
+=============================
+Apache Atlas Client in Python
+=============================
 
 
 .. image:: https://img.shields.io/pypi/v/atlasclient.svg
@@ -18,7 +18,7 @@ atlasclient
      :alt: Updates
 
 
-Apache Atlas client
+Apache Atlas client in Python. 
 
 
 * Free software: Apache Software License 2.0
@@ -28,7 +28,7 @@ Apache Atlas client
 Features
 --------
 
-* TODO
+* allow multiprocessing
 
 Credits
 ---------
