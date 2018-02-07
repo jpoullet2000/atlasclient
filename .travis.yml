@@ -4,5 +4,5 @@ python:
           - "3.5"
           - "3.6"
 install:
-          - "pip install"
+          - "pip install pytest pytest_mock coveralls pep8 six"
 script: py.test
