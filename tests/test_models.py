@@ -1,12 +1,31 @@
 from pytest_mock import mocker
-from atlasclient import client
 from pkg_resources import resource_filename
 import json
 import pytest
 
+from atlasclient import client
+from atlasclient import exceptions
 GUID = '8bbea92b-d98c-4613-ae6e-1a9d0b4f344b'
 RESPONSE_JSON_DIR = 'response_json'
 
+
+@pytest.fixture(scope='class')
+def entity_post_response():
+    with open('{}/entity_post.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+@pytest.fixture(scope='class')
+def entity_bulk_response():
+    with open('{}/entitybulk_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+@pytest.fixture(scope='class')
+def entity_bulk_classification_response():
+    with open('{}/entitybulkclassification_post.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
 
 @pytest.fixture(scope='class')
 def entity_guid_response():
@@ -14,13 +33,11 @@ def entity_guid_response():
             response = json.load(json_data)
     return(response)
 
-
 @pytest.fixture(scope='class')
 def entity_guid_delete_response():
     with open('{}/entityguid_delete.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
             response = json.load(json_data)
     return(response)
-
 
 @pytest.fixture(scope='function')
 def entity_guid(atlas_client):
@@ -52,13 +69,73 @@ def lineage_guid_response():
     return(response)
 
 @pytest.fixture(scope='class')
+def relationship_guid_response():
+    with open('{}/relationship_guid_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+@pytest.fixture(scope='class')
 def search_attribute_response():
     with open('{}/search_attribute_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
             response = json.load(json_data)
     return(response)
 
 
-class TestEntityByGuid():
+class TestEntityREST():
+    def test_entity_post(self, mocker, atlas_client, entity_guid_response, entity_post_response):
+        mocker.patch.object(atlas_client.client, 'get')
+        atlas_client.client.get.return_value = entity_guid_response
+        entity_collection = atlas_client.entity_post(data=entity_guid_response) 
+        for e in entity_collection:
+            assert e._data == entity_guid_response
+            mocker.patch.object(e.client, 'post')
+            e.client.post.return_value = entity_guid_response 
+            e.create()
+            e.client.post.assert_called_with(e._href, data=e._data)
+            with pytest.raises(exceptions.MethodNotImplemented) as err:
+                e.update()
+            with pytest.raises(exceptions.MethodNotImplemented) as err:
+                e.delete()
+
+    def test_entity_bulk_get(self, mocker, atlas_client, entity_bulk_response):
+        mocker.patch.object(atlas_client.client, 'get')
+        atlas_client.entity_bulk.client.get.return_value =  entity_bulk_response 
+        params = {'guid': [GUID, '92b3a92b-d98c-4613-ae6e-1a9d0b4f344b']}
+        bulk_collection = atlas_client.entity_bulk(**params) 
+        for bulk in bulk_collection:
+            atlas_client.entity_bulk.client.get.assert_called_with(bulk_collection.url, params=params)
+            for entity in bulk.entities:
+                assert entity.version == 12345
+
+    def test_entity_bulk_delete(self, mocker, atlas_client, entity_bulk_response):
+        mocker.patch.object(atlas_client.client, 'get')
+        atlas_client.entity_bulk.client.get.return_value =  entity_bulk_response 
+        mocker.patch.object(atlas_client.client, 'delete')
+        atlas_client.entity_bulk.client.delete.return_value =  entity_bulk_response 
+        params = {'guid': [GUID, '92b3a92b-d98c-4613-ae6e-1a9d0b4f344b']}
+        bulk_collection = atlas_client.entity_bulk(**params) 
+        for bulk in bulk_collection:
+            bulk.delete(**params)
+            atlas_client.entity_bulk.client.delete.assert_called_with(bulk_collection.url, params=params)
+    
+    def test_entity_bulk_create(self, mocker, atlas_client, entity_bulk_response):
+        mocker.patch.object(atlas_client.client, 'get')
+        atlas_client.entity_bulk.client.get.return_value =  entity_bulk_response 
+        mocker.patch.object(atlas_client.client, 'post')
+        atlas_client.entity_bulk.client.post.return_value =  entity_bulk_response 
+        params = {'guid': [GUID, '92b3a92b-d98c-4613-ae6e-1a9d0b4f344b']}
+        bulk_collection = atlas_client.entity_bulk(**params) 
+        for bulk in bulk_collection:
+            bulk.create()
+            atlas_client.entity_bulk.client.post.assert_called_with(bulk_collection.url, data=bulk._data)
+    
+    def test_entity_bulk_classification_create(self, mocker, atlas_client, entity_bulk_classification_response):
+        mocker.patch.object(atlas_client.entity_bulk_classification.client, 'post')
+        atlas_client.entity_bulk_classification.client.post.return_value =  entity_bulk_classification_response 
+        params = {'guid': [GUID, '92b3a92b-d98c-4613-ae6e-1a9d0b4f344b']}
+        atlas_client.entity_bulk_classification.create(**entity_bulk_classification_response)
+        atlas_client.entity_bulk_classification.client.post.assert_called_with(atlas_client.entity_bulk_classification.url, data=entity_bulk_classification_response) 
+        
     def test_get_entity_by_guid(self, mocker, entity_guid_response, entity_guid):
         mocker.patch.object(entity_guid.client.client, 'request')
         entity_guid.client.client.request.return_value = entity_guid_response
@@ -302,10 +379,103 @@ class TestLineageGuid():
         lineage = atlas_client.lineage_guid(GUID)
         assert lineage.lineageDirection == 'BOTH'
 
-class TestSearchAttribute():
+class TestRelationshipREST():
+    def test_relationship_guid_get(self, mocker, atlas_client, relationship_guid_response):
+        mocker.patch.object(atlas_client.client, 'request')
+        atlas_client.client.request.return_value =  relationship_guid_response 
+        relationship = atlas_client.relationship_guid(GUID)
+        assert relationship.status == 'ACTIVE'
+
+    def test_relationship_guid_delete(self, mocker, atlas_client, relationship_guid_response):
+        mocker.patch.object(atlas_client.client, 'request')
+        atlas_client.client.request.return_value =  relationship_guid_response 
+        relationship = atlas_client.relationship_guid(GUID)
+        relationship.delete()
+ 
+    def test_relationship_guid_update(self, mocker, atlas_client, relationship_guid_response):
+        mocker.patch.object(atlas_client.client, 'request')
+        atlas_client.client.request.return_value =  relationship_guid_response 
+        relationship = atlas_client.relationship_guid(GUID)
+        relationship.update()
+    
+    def test_relationship_guid_create(self, mocker, atlas_client, relationship_guid_response):
+        mocker.patch.object(atlas_client.client, 'request')
+        atlas_client.client.request.return_value =  relationship_guid_response 
+        relationship = atlas_client.relationship_guid(GUID)
+        with pytest.raises(exceptions.MethodNotImplemented) as e:
+            relationship.create()
+
+#    def test_relationship_get(self, mocker, atlas_client, relationship_guid_response):
+#        with pytest.raises(exceptions.MethodNotImplemented) as e: 
+#            atlas_client.relationship.refresh() 
+
+    def test_relationship_put(self, mocker, atlas_client, relationship_guid_response):
+        relationship_collection = atlas_client.relationship(data=relationship_guid_response) 
+        for r in relationship_collection:
+            assert r._data == relationship_guid_response
+            mocker.patch.object(r.client, 'put')
+            r.client.put.return_value = relationship_guid_response 
+            r.update()
+            r.client.put.assert_called_with(r._href, data=r._data)
+             
+    def test_relationship_post(self, mocker, atlas_client, relationship_guid_response):
+        relationship_collection = atlas_client.relationship(data=relationship_guid_response) 
+        for r in relationship_collection:
+            assert r._data == relationship_guid_response
+            mocker.patch.object(r.client, 'post')
+            r.client.post.return_value = relationship_guid_response 
+            r.create()
+            r.client.post.assert_called_with(r._href, data=r._data)
+        
+
+class TestDiscoveryREST():
     def test_search_attribute_get(self, mocker, atlas_client, search_attribute_response):
         mocker.patch.object(atlas_client.search_attribute.client, 'get')
         atlas_client.search_attribute.client.get.return_value =  search_attribute_response 
-        atlas_client.search_attribute(attrName='attrName', attrValue='attrVal', offset=1) 
-        #for sr in atlas_client.search_attribute:
-        #    assert sr.queryText == '...'
+        params = {'attrName': 'attrName', 'attrValue': 'attrVal', 'offset': '1'}
+        search_results = atlas_client.search_attribute(**params) 
+        for s in search_results:
+            assert s.queryType == 'GREMLIN'
+            atlas_client.search_attribute.client.get.assert_called_with(s.url, params=params)
+
+    def test_search_basic_get(self, mocker, atlas_client, search_attribute_response):
+        mocker.patch.object(atlas_client.search_basic.client, 'get')
+        search_attribute_response['queryType'] = 'BASIC'
+        atlas_client.search_basic.client.get.return_value =  search_attribute_response 
+        params = {'classification': 'class', 'excludedDeletedEntities': 'True', 'limit': '1'}
+        search_results = atlas_client.search_basic(**params) 
+        for s in search_results:
+            assert s.queryType == 'BASIC'
+            atlas_client.search_basic.client.get.assert_called_with(s.url, params=params)
+
+    def test_search_basic_post(self, mocker, atlas_client, search_attribute_response):
+        mocker.patch.object(atlas_client.search_basic.client, 'get')
+        search_attribute_response['queryType'] = 'BASIC'
+        atlas_client.search_basic.client.get.return_value =  search_attribute_response 
+        mocker.patch.object(atlas_client.search_basic.client, 'post')
+        atlas_client.search_basic.client.post.return_value =  search_attribute_response 
+        search_results = atlas_client.search_basic 
+        for s in search_results:
+            assert s.queryType == 'BASIC'
+            s.create()
+            atlas_client.search_basic.client.post.assert_called_with(s.url, data=s._data)
+
+    def test_search_dsl_get(self, mocker, atlas_client, search_attribute_response):
+        mocker.patch.object(atlas_client.search_dsl.client, 'get')
+        search_attribute_response['queryType'] = 'DSL'
+        atlas_client.search_dsl.client.get.return_value =  search_attribute_response 
+        params = {'classification': 'class', 'limit': '1'}
+        search_results = atlas_client.search_dsl(**params) 
+        for s in search_results:
+            assert s.queryType == 'DSL'
+            atlas_client.search_dsl.client.get.assert_called_with(s.url, params=params)
+
+    def test_search_fulltext_get(self, mocker, atlas_client, search_attribute_response):
+        mocker.patch.object(atlas_client.search_fulltext.client, 'get')
+        search_attribute_response['queryType'] = 'ATTRIBUTE'
+        atlas_client.search_fulltext.client.get.return_value =  search_attribute_response 
+        params = {'classification': 'class', 'excludedDeletedEntities': 'True', 'limit': '1'}
+        search_results = atlas_client.search_fulltext(**params) 
+        for s in search_results:
+            assert s.queryType == 'ATTRIBUTE'
+            atlas_client.search_fulltext.client.get.assert_called_with(s.url, params=params)

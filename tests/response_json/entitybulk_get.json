@@ -1,0 +1,127 @@
+{
+  "entities" : [ {
+    "guid" : "...",
+    "status" : "DELETED",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "relationshipAttributes" : {
+      "property1" : { },
+      "property2" : { }
+    },
+    "classifications" : [ {
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }, {
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    } ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  }, {
+    "guid" : "...",
+    "status" : "ACTIVE",
+    "createdBy" : "...",
+    "updatedBy" : "...",
+    "createTime" : 12345,
+    "updateTime" : 12345,
+    "version" : 12345,
+    "relationshipAttributes" : {
+      "property1" : { },
+      "property2" : { }
+    },
+    "classifications" : [ {
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }, {
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    } ],
+    "typeName" : "...",
+    "attributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  } ],
+  "referredEntities" : {
+    "property1" : {
+      "guid" : "...",
+      "status" : "DELETED",
+      "createdBy" : "...",
+      "updatedBy" : "...",
+      "createTime" : 12345,
+      "updateTime" : 12345,
+      "version" : 12345,
+      "relationshipAttributes" : {
+        "property1" : { },
+        "property2" : { }
+      },
+      "classifications" : [ {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      }, {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      } ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    },
+    "property2" : {
+      "guid" : "...",
+      "status" : "DELETED",
+      "createdBy" : "...",
+      "updatedBy" : "...",
+      "createTime" : 12345,
+      "updateTime" : 12345,
+      "version" : 12345,
+      "relationshipAttributes" : {
+        "property1" : { },
+        "property2" : { }
+      },
+      "classifications" : [ {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      }, {
+        "typeName" : "...",
+        "attributes" : {
+          "property1" : { },
+          "property2" : { }
+        }
+      } ],
+      "typeName" : "...",
+      "attributes" : {
+        "property1" : { },
+        "property2" : { }
+      }
+    }
+  }
+}

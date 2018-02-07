@@ -19,6 +19,7 @@ import json
 import logging
 import six
 import time
+import ast
 
 from atlasclient import events, exceptions, utils
 
@@ -113,9 +114,11 @@ class ModelCollection(object):
 
     This is what enables things like:
 
-    cluster = client.clusters(cluster_name)
-    for host in client.clusters(cluster_name).hosts(hostname, hostname):
-        host.enable_maintenance()
+    entity_bulk_collection = atlas_client.entity_bulk(**params) 
+    for bulk in entity_bulk_collection:
+        for entity in bulk.entities:
+            entity.version == 12345
+    
     """
     def __init__(self, client, model_class, parent=None):
         self.client = client
@@ -220,7 +223,7 @@ class QueryableModelCollection(ModelCollection):
         self._models = []
         if kwargs:
             prefix = self.model_class.data_key
-            for (key, value) in kwargs.iteritems():
+            for (key, value) in kwargs.items():
                 if self.model_class.use_key_prefix:
                     key = '/'.join([prefix, key])
                 if not isinstance(value, six.string_types):
@@ -245,7 +248,9 @@ class QueryableModelCollection(ModelCollection):
         """Load the collection from the server, if necessary."""
         if not self._is_inflated:
             self.check_version()
-            import pdb; pdb.set_trace()
+            for k, v in self._filter.items():
+                if '[' in v:
+                    self._filter[k] = ast.literal_eval(v) 
             self.load(self.client.get(self.url, params=self._filter))
 
         self._is_inflated = True
@@ -318,11 +323,11 @@ class QueryableModelCollection(ModelCollection):
             model.update(**kwargs)
         return self
 
-    def delete(self):
+    def delete(self, **kwargs):
         """Delete all resources in this collection."""
         self.inflate()
         for model in self._models:
-            model.delete()
+            model.delete(**kwargs)
         return
 
     @events.evented
@@ -566,7 +571,7 @@ class QueryableModel(Model):
     """
 
     collection_class = QueryableModelCollection
-    use_key_prefix = True
+    use_key_prefix = False
     path = None
     data_key = None
     relationships = {}
@@ -698,9 +703,12 @@ class QueryableModel(Model):
         return self
 
     @events.evented
-    def delete(self):
+    def delete(self, **kwargs):
         """Delete a resource by issuing a DELETE http request against it."""
-        self.load(self.client.delete(self.url))
+        if len(kwargs) > 0:
+            self.load(self.client.delete(self.url, params=kwargs))
+        else:
+            self.load(self.client.delete(self.url))
         self.parent.remove(self)
         return
 

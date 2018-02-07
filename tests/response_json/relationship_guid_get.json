@@ -1,0 +1,31 @@
+{
+  "guid" : "...",
+  "status" : "ACTIVE",
+  "createdBy" : "...",
+  "updatedBy" : "...",
+  "createTime" : 12345,
+  "updateTime" : 12345,
+  "version" : 12345,
+  "end1" : {
+    "guid" : "...",
+    "typeName" : "...",
+    "uniqueAttributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  },
+  "end2" : {
+    "guid" : "...",
+    "typeName" : "...",
+    "uniqueAttributes" : {
+      "property1" : { },
+      "property2" : { }
+    }
+  },
+  "label" : "...",
+  "typeName" : "...",
+  "attributes" : {
+    "property1" : { },
+    "property2" : { }
+  }
+}
