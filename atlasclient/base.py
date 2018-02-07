@@ -114,11 +114,11 @@ class ModelCollection(object):
 
     This is what enables things like:
 
-    entity_bulk_collection = atlas_client.entity_bulk(**params) 
+    entity_bulk_collection = atlas_client.entity_bulk(**params)
     for bulk in entity_bulk_collection:
         for entity in bulk.entities:
             entity.version == 12345
-    
+
     """
     def __init__(self, client, model_class, parent=None):
         self.client = client
@@ -208,12 +208,12 @@ class QueryableModelCollection(ModelCollection):
             for item in items:
                 if isinstance(item, dict):
                     # we're preloading this object from existing response data
-                    model = self.model_class(self, 
+                    model = self.model_class(self,
                                              href=item['href'].replace('classifications/', 'classification/'))
                     model.load(item)
                 else:
                     # we only have the primary id, so create an deflated model
-                    model = self.model_class(self, 
+                    model = self.model_class(self,
                                              href='/'.join([self.url, item]).replace('classifications/', 'classification/'),
                                              data={self.model_class.primary_key: item})
                 self._models.append(model)
@@ -250,7 +250,7 @@ class QueryableModelCollection(ModelCollection):
             self.check_version()
             for k, v in self._filter.items():
                 if '[' in v:
-                    self._filter[k] = ast.literal_eval(v) 
+                    self._filter[k] = ast.literal_eval(v)
             self.load(self.client.get(self.url, params=self._filter))
 
         self._is_inflated = True
@@ -282,11 +282,11 @@ class QueryableModelCollection(ModelCollection):
             for item in response['items']:
                 model = self.model_class(
                     self,
-                    href=item.get('href').replace('classifications/', 'classification/') 
+                    href=item.get('href').replace('classifications/', 'classification/')
                 )
                 model.load(item)
                 self._models.append(model)
-        else: 
+        else:
             self._models = []
             if isinstance(response, dict):
                 for key in response.keys():
@@ -295,13 +295,10 @@ class QueryableModelCollection(ModelCollection):
                     self._models.append(model)
             else:
                 for item in response:
-                    model = self.model_class(
-                            self,
-                            href=item.get('href')  #  or self.parent._href
-                            )
+                    model = self.model_class(self,
+                                             href=item.get('href'))
                     model.load(item)
                     self._models.append(model)
-
 
     def create(self, *args, **kwargs):
         """Add a resource to this collection."""
@@ -309,8 +306,8 @@ class QueryableModelCollection(ModelCollection):
         if len(args) == 1:
             kwargs[self.model_class.primary_key] = args[0]
             href = '/'.join([href, args[0]])
-        model = self.model_class(self, 
-                                 href=href.replace('classifications/', 'classification/'), 
+        model = self.model_class(self,
+                                 href=href.replace('classifications/', 'classification/'),
                                  data=kwargs)
         model.create(**kwargs)
         self._models.append(model)
@@ -339,8 +336,7 @@ class QueryableModelCollection(ModelCollection):
         return self.inflate()
 
     def check_version(self):
-        if (self.model_class.min_version > OLDEST_SUPPORTED_VERSION
-                and self.client.version < self.model_class.min_version):
+        if (self.model_class.min_version > OLDEST_SUPPORTED_VERSION and self.client.version < self.model_class.min_version):
             min_version = utils.version_str(self.model_class.min_version)
             curr_version = utils.version_str(self.client.version)
             raise exceptions.ClientError(message="Cannot access %s in version %s, it was added in "
@@ -508,7 +504,7 @@ class Model(object):
         do it for you.  If your Model requires anything other than the default
         of { primary_key: id }, then you can overload it and do what is needed.
         """
-        return { self.primary_key: self.identifier }
+        return {self.primary_key: self.identifier}
 
     @events.evented
     def wait(self, **kwargs):  # pylint: disable=unused-argument
@@ -545,7 +541,7 @@ class QueryableModel(Model):
     """A queryable model is a model that is backed by a URL.
 
     Most resources in the Atlas API are directly accessible via a URL, and this
-    class serves as a base class for all of them. 
+    class serves as a base class for all of them.
 
     There are some nice convenience methods like create(), update(), and
     delete().  Unlike some ORMs, there's no way to modify values by updating
@@ -622,7 +618,7 @@ class QueryableModel(Model):
 
     def _generate_input_dict(self, **kwargs):
         if self.data_key:
-            data = { self.data_key: {}}
+            data = {self.data_key: {}}
             if len(kwargs) == 0:
                     data = self._data
                     return data

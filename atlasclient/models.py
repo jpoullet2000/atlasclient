@@ -26,29 +26,6 @@ LOG = logging.getLogger(__name__)
 LOG.addHandler(NullHandler())
 
 
-#class EntityCollection(base.DependentModelCollection):
-#    def __call__(self, *args, **kwargs):
-#        fields = ('guid', 'status', 'createdBy', 'updatedBy', 'createTime', 'updateTime', 'version',)
-#        for f in fields:
-#            setattr(self, f, self.parent._data['entity'][f])   
-#        return super(EntityCollection, self).__call__(*args, **kwargs)
-#
-#
-#class Entity(base.DependentModel):
-#     collection_class = EntityCollection
-#
-#
-#class ReferredEntityCollection(base.DependentModelCollection):
-#    def __call__(self, *args, **kwargs):
-#        #fields = ('guid',)
-#        for k, v in self.parent._data['referredEntities'].items():
-#            setattr(self, k, v)
-#        return super(ReferredEntityCollection, self).__call__(*args, **kwargs)
-#
-#
-#class ReferredEntity(base.DependentModel):
-#     collection_class = ReferredEntityCollection
-
 class EntityCollection(base.DependentModelCollection):
     def __init__(self, client, model_class, parent=None):
         self.client = client
@@ -60,23 +37,12 @@ class EntityCollection(base.DependentModelCollection):
             model = self.model_class(self, data=entity)
             self._models.append(model)
         self._iter_marker = 0
-#    def __call__(self, *args, **kwargs):
-#        """
-#        
-#        """
-#        import pdb; pdb.set_trace()
-#        self._models = []
-#        self._is_inflated = True
-#
-#        model = self.model_class(self, 
-#                        #href=self.parent.url,
-#                                 data=self.parent._data['entities'])
-#        self._models.append(model)
-#        return self
+
 
 class Entity(base.DependentModel):
-     collection_class = EntityCollection
-     fields = ('guid', 'status', 'displayText', 'classificationNames', 'typeName', 'attributes', 'createdBy', 'updatedBy', 'createTime', 'updateTime', 'version',)
+    collection_class = EntityCollection
+    fields = ('guid', 'status', 'displayText', 'classificationNames', 'typeName', 'attributes', 'createdBy', 'updatedBy', 'createTime', 'updateTime', 'version',)
+
 
 class EntityPostCollection(base.QueryableModelCollection):
     def __call__(self, *args, **kwargs):
@@ -86,7 +52,7 @@ class EntityPostCollection(base.QueryableModelCollection):
             raise exceptions.BadRequest(method=self.__call__, details='This class should be called with the argument "data="')
         self._models = []
         self._is_inflated = True
-        model = self.model_class(self, 
+        model = self.model_class(self,
                                  href=self.url,
                                  data=kwargs.get('data'))
         self._models.append(model)
@@ -102,14 +68,14 @@ class EntityPost(base.QueryableModel):
     path = 'entity'
     data_key = 'entity_post'
     fields = ('entity', 'referredEntities')
-    
+
     @events.evented
     def delete(self, **kwargs):
         """
         Delete is not allowed for this resource
         """
         raise exceptions.MethodNotImplemented(method=self.delete, details='The method delete is not available for this resource')
-    
+
     @events.evented
     def update(self, **kwargs):
         """
@@ -126,28 +92,21 @@ class EntityPost(base.QueryableModel):
         self.client.post(self.url, data=data)
         return self
 
+
 class Classification(base.QueryableModel):
     path = 'classifications'
     data_key = 'classifications'
     primary_key = 'typeName'
     fields = ('typeName', 'attributes')
-    
-#    def __init__(self, *args, **kwargs): 
-#        super(base.QueryableModel, self).__init__(*args, **kwargs)
-#        self._href = self._href.replace('classifications/', 'classification/')
- 
-#    def _generate_input_dict(self, **kwargs):
-#        return self._data 
-    
+
     def _generate_input_dict(self, **kwargs):
         if self.data_key:
-            data = { self.data_key: {}}
+            data = {self.data_key: {}}
             for field in kwargs:
                 if field in self.fields:
                     data[self.data_key][field] = kwargs[field]
                 else:
                     data[field] = kwargs[field]
-            #import pdb; pdb.set_trace()
             for field in self.fields:
                 if hasattr(self, field) and field not in data[self.data_key].keys():
                     data[self.data_key][field] = getattr(self, field)
@@ -166,8 +125,6 @@ class Classification(base.QueryableModel):
         if self.primary_key in kwargs:
             del kwargs[self.primary_key]
         data = self._generate_input_dict(**kwargs)
-        # /v2/entity/guid/{guid}/classifications
-        #import pdb; pdb.set_trace()
         self.load(self.client.post('/'.join(self.url.split('/')[:-1]) + 's', data=data))
         return self
 
@@ -182,16 +139,16 @@ class Classification(base.QueryableModel):
 
 
 class EntityGuidClassificationCollection(base.QueryableModelCollection):
-    
+
     def _generate_input_dict(self, **kwargs):
         data = {'classifications': []}
         for model in self._models:
             model_data = {}
             for field in model.fields:
-                model_data[field] = getattr(model, field) 
-            data['classifications'].append(model_data)        
+                model_data[field] = getattr(model, field)
+            data['classifications'].append(model_data)
         return data
-    
+
     @events.evented
     def update(self, **kwargs):
         """Update a resource by passing in modifications via keyword arguments.
@@ -212,11 +169,11 @@ class EntityGuid(base.QueryableModel):
     primary_key = 'guid'
     fields = ('entity', 'referredEntities')
     relationships = {'classifications': EntityGuidClassification,
-                    }
+                     }
 
     def _generate_input_dict(self, **kwargs):
-        return self._data 
- 
+        return self._data
+
 
 class EntityBulkCollection(base.QueryableModelCollection):
     def load(self, response):
@@ -229,25 +186,19 @@ class EntityBulk(base.QueryableModel):
     collection_class = EntityBulkCollection
     path = 'entity/bulk'
     data_key = 'entity_bulk'
-    fields = ('entities', 'referredEntities') 
+    fields = ('entities', 'referredEntities')
     relationships = {'entities': Entity}
-
-
-#class EntityBulkClassificationCollection(base.QueryableModelCollection):
-#    def load(self, response):
-#        model = self.model_class(self, href=self.url)
-#        model.load(response)
-#        self._models.append(model)
 
 
 class EntityBulkClassification(base.QueryableModel):
     path = 'entity/bulk/classification'
     data_key = 'entity_bulk_classification'
-    fields = ('classification', 'entityGuids') 
-    
+    fields = ('classification', 'entityGuids')
+
     def _generate_input_dict(self, **kwargs):
         return(kwargs)
 
+
 class ConstraintCollection(base.DependentModelCollection):
     def __init__(self, client, model_class, parent=None):
         self.client = client
@@ -290,7 +241,7 @@ class AttributeDef(base.DependentModel):
               'isIndexable', 'defaultValue',
               'constraints'
               )
-    relationships = {'constraints' : Constraint} 
+    relationships = {'constraints': Constraint}
 
 
 class StructDefCollection(base.DependentModelCollection):
@@ -301,7 +252,7 @@ class StructDef(base.DependentModel):
     collection_class = StructDefCollection
     data_key = 'structdefs'
     primary_key = 'name'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'attributeDefs')
     relationships = {'attributeDefs': AttributeDef}
@@ -324,25 +275,25 @@ class ElementDef(base.DependentModel):
     collection_class = ElementDefCollection
     data_key = 'elementdefs'
     primary_key = 'ordinal'
-    fields = ('ordinal', 'description', 'value',)   
+    fields = ('ordinal', 'description', 'value',)
 
 
 class EnumDefCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class EnumDef(base.DependentModel):
     collection_class = EnumDefCollection
     data_key = 'enumdefs'
     primary_key = 'name'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'elementDefs')
     relationships = {'elementDefs': ElementDef}
 
 
 class ClassificationDefCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class ClassificationDef(base.DependentModel):
@@ -360,7 +311,7 @@ class ClassificationDef(base.DependentModel):
 
 
 class EntityDefCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class EntityDef(base.DependentModel):
@@ -378,7 +329,7 @@ class EntityDef(base.DependentModel):
 
 
 class TypeDefHeaderCollection(base.QueryableModelCollection):
-    pass 
+    pass
 
 
 class TypeDefHeader(base.QueryableModel):
@@ -387,7 +338,7 @@ class TypeDefHeader(base.QueryableModel):
     data_key = 'typedefs_headers'
     primary_key = 'guid'
     fields = ('guid', 'name', 'category')
-    
+
 
 class TypeDefs(base.QueryableModelCollection):
     def load(self, response):
@@ -408,7 +359,6 @@ class TypeDef(base.QueryableModel):
                      'entityDefs': EntityDef,
                      }
 
-
     def load(self, response):
         self._data.update(response)
         for rel in [x for x in response if x in self.relationships]:
@@ -420,6 +370,7 @@ class TypeDef(base.QueryableModel):
         self.client.delete(self.url, data=self._data)
         self._data = {}
         return self
+
 
 class ClassificationDefGuid(base.QueryableModel):
     path = 'types/classificationdef/guid'
@@ -481,7 +432,7 @@ class EnumDefGuid(base.QueryableModel):
     path = 'types/enumdef/guid'
     data_key = 'enumdef_guid'
     primary_key = 'guid'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'elementDefs')
     relationships = {'elementDefs': ElementDef}
@@ -491,7 +442,7 @@ class EnumDefName(base.QueryableModel):
     path = 'types/enumdef/name'
     data_key = 'enumdef_name'
     primary_key = 'name'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'elementDefs')
     relationships = {'elementDefs': ElementDef}
@@ -531,6 +482,7 @@ class RelationshipDefName(base.QueryableModel):
               'options')
     relationships = {'attributeDefs': AttributeDef,
                      }
+
 
 class StructDefGuid(base.QueryableModel):
     path = 'types/structdef/guid'
@@ -579,8 +531,9 @@ class TypeDefName(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
 
+
 class LineageGuidRelationCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class LineageGuidRelation(base.DependentModel):
@@ -589,6 +542,7 @@ class LineageGuidRelation(base.DependentModel):
     fields = ('fromEntityId',
               'toEntityId',
               )
+
 
 class LineageGuid(base.QueryableModel):
     path = 'lineage/guid'
@@ -605,7 +559,7 @@ class RelationshipGuid(base.QueryableModel):
     fields = ('guid', 'status', 'createdBy',
               'updatedBy', 'createTime', 'updateTime',
               'version', 'end1', 'end2', 'label', 'typeName', 'attributes')
-    
+
     @events.evented
     def update(self, **kwargs):
         """Update a resource by passing in modifications via keyword arguments.
@@ -615,22 +569,23 @@ class RelationshipGuid(base.QueryableModel):
         url = self.parent.url + '/relationship'
         self.load(self.client.put(url, data=data))
         return self
-    
+
     def create(self, **kwargs):
         """Raise error since guid cannot be duplicated
         """
         raise exceptions.MethodNotImplemented(method=self.create, url=self.url, details='GUID cannot be duplicated, to create a new GUID use the relationship resource')
 
+
 class RelationshipCollection(base.QueryableModelCollection):
     def __call__(self, *args, **kwargs):
         """
-        
+
         """
         if 'data' not in kwargs:
             raise exceptions.BadRequest(method=self.__call, details='This class should be called with the argument "data="')
         self._models = []
         self._is_inflated = True
-        model = self.model_class(self, 
+        model = self.model_class(self,
                                  href=self.url,
                                  data=kwargs.get('data'))
         self._models.append(model)
@@ -676,18 +631,7 @@ class FullTextResult(base.DependentModel):
 
 
 class SearchAttributeCollection(base.QueryableModelCollection):
-        #    def __init__(self, *args, **kwargs):
-#        self.attrName = kwargs.get('attrName')
-#        self.attrValuePrefix = kwargs.get('attrValuePrefix')
-#        self.limit = kwargs.get('limit')
-#        self.offset = kwargs.get('offset')
-#        self.typeName = kwargs.get('typeName')
-#        import pdb; pdb.set_trace()
-#        super().__init__(self, *args, **kwargs)
-#
     def load(self, response):
-        #parameters = [attr for attr in ['attrName', 'attrValuePrefix', 'limit', 'offset', 'typeName'] if getattr(self, attr) is not None]
-        #url = self.url + '?' + '&'.join(parameters)
         model = self.model_class(self, href=self.url)
         model.load(response)
         self._models.append(model)
@@ -697,10 +641,9 @@ class SearchAttribute(base.QueryableModel):
     collection_class = SearchAttributeCollection
     path = 'search/attribute'
     data_key = 'search_attribute'
-    
-    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification', 
-              'entities' , 'attributes', 'fullTextResult', 'referredEntities')
-    relationships =    fields = ('classification', 'entityGuids') 
+    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification',
+              'entities', 'attributes', 'fullTextResult', 'referredEntities')
+
 
 class ConstraintCollection(base.DependentModelCollection):
     def __init__(self, client, model_class, parent=None):
@@ -744,7 +687,7 @@ class AttributeDef(base.DependentModel):
               'isIndexable', 'defaultValue',
               'constraints'
               )
-    relationships = {'constraints' : Constraint} 
+    relationships = {'constraints': Constraint}
 
 
 class StructDefCollection(base.DependentModelCollection):
@@ -755,7 +698,7 @@ class StructDef(base.DependentModel):
     collection_class = StructDefCollection
     data_key = 'structdefs'
     primary_key = 'name'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'attributeDefs')
     relationships = {'attributeDefs': AttributeDef}
@@ -778,25 +721,25 @@ class ElementDef(base.DependentModel):
     collection_class = ElementDefCollection
     data_key = 'elementdefs'
     primary_key = 'ordinal'
-    fields = ('ordinal', 'description', 'value',)   
+    fields = ('ordinal', 'description', 'value',)
 
 
 class EnumDefCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class EnumDef(base.DependentModel):
     collection_class = EnumDefCollection
     data_key = 'enumdefs'
     primary_key = 'name'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'elementDefs')
     relationships = {'elementDefs': ElementDef}
 
 
 class ClassificationDefCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class ClassificationDef(base.DependentModel):
@@ -814,7 +757,7 @@ class ClassificationDef(base.DependentModel):
 
 
 class EntityDefCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class EntityDef(base.DependentModel):
@@ -832,7 +775,7 @@ class EntityDef(base.DependentModel):
 
 
 class TypeDefHeaderCollection(base.QueryableModelCollection):
-    pass 
+    pass
 
 
 class TypeDefHeader(base.QueryableModel):
@@ -841,7 +784,7 @@ class TypeDefHeader(base.QueryableModel):
     data_key = 'typedefs_headers'
     primary_key = 'guid'
     fields = ('guid', 'name', 'category')
-    
+
 
 class TypeDefs(base.QueryableModelCollection):
     def load(self, response):
@@ -862,7 +805,6 @@ class TypeDef(base.QueryableModel):
                      'entityDefs': EntityDef,
                      }
 
-
     def load(self, response):
         self._data.update(response)
         for rel in [x for x in response if x in self.relationships]:
@@ -874,6 +816,7 @@ class TypeDef(base.QueryableModel):
         self.client.delete(self.url, data=self._data)
         self._data = {}
         return self
+
 
 class ClassificationDefGuid(base.QueryableModel):
     path = 'types/classificationdef/guid'
@@ -935,7 +878,7 @@ class EnumDefGuid(base.QueryableModel):
     path = 'types/enumdef/guid'
     data_key = 'enumdef_guid'
     primary_key = 'guid'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'elementDefs')
     relationships = {'elementDefs': ElementDef}
@@ -945,7 +888,7 @@ class EnumDefName(base.QueryableModel):
     path = 'types/enumdef/name'
     data_key = 'enumdef_name'
     primary_key = 'name'
-    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy', 
+    fields = ('name', 'category', 'defaultValue', 'guid', 'createdBy',
               'updatedBy', 'createTime', 'updateTime', 'version',
               'description', 'typeVersion', 'options', 'elementDefs')
     relationships = {'elementDefs': ElementDef}
@@ -985,6 +928,7 @@ class RelationshipDefName(base.QueryableModel):
               'options')
     relationships = {'attributeDefs': AttributeDef,
                      }
+
 
 class StructDefGuid(base.QueryableModel):
     path = 'types/structdef/guid'
@@ -1033,8 +977,9 @@ class TypeDefName(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
 
+
 class LineageGuidRelationCollection(base.DependentModelCollection):
-    pass 
+    pass
 
 
 class LineageGuidRelation(base.DependentModel):
@@ -1043,6 +988,7 @@ class LineageGuidRelation(base.DependentModel):
     fields = ('fromEntityId',
               'toEntityId',
               )
+
 
 class LineageGuid(base.QueryableModel):
     path = 'lineage/guid'
@@ -1059,7 +1005,7 @@ class RelationshipGuid(base.QueryableModel):
     fields = ('guid', 'status', 'createdBy',
               'updatedBy', 'createTime', 'updateTime',
               'version', 'end1', 'end2', 'label', 'typeName', 'attributes')
-    
+
     @events.evented
     def update(self, **kwargs):
         """Update a resource by passing in modifications via keyword arguments.
@@ -1069,22 +1015,23 @@ class RelationshipGuid(base.QueryableModel):
         url = self.parent.url + '/relationship'
         self.load(self.client.put(url, data=data))
         return self
-    
+
     def create(self, **kwargs):
         """Raise error since guid cannot be duplicated
         """
         raise exceptions.MethodNotImplemented(method=self.create, url=self.url, details='GUID cannot be duplicated, to create a new GUID use the relationship resource')
 
+
 class RelationshipCollection(base.QueryableModelCollection):
     def __call__(self, *args, **kwargs):
         """
-        
+
         """
         if 'data' not in kwargs:
             raise exceptions.BadRequest(method=self.__call, details='This class should be called with the argument "data="')
         self._models = []
         self._is_inflated = True
-        model = self.model_class(self, 
+        model = self.model_class(self,
                                  href=self.url,
                                  data=kwargs.get('data'))
         self._models.append(model)
@@ -1130,18 +1077,7 @@ class FullTextResult(base.DependentModel):
 
 
 class SearchAttributeCollection(base.QueryableModelCollection):
-        #    def __init__(self, *args, **kwargs):
-#        self.attrName = kwargs.get('attrName')
-#        self.attrValuePrefix = kwargs.get('attrValuePrefix')
-#        self.limit = kwargs.get('limit')
-#        self.offset = kwargs.get('offset')
-#        self.typeName = kwargs.get('typeName')
-#        import pdb; pdb.set_trace()
-#        super().__init__(self, *args, **kwargs)
-#
     def load(self, response):
-        #parameters = [attr for attr in ['attrName', 'attrValuePrefix', 'limit', 'offset', 'typeName'] if getattr(self, attr) is not None]
-        #url = self.url + '?' + '&'.join(parameters)
         model = self.model_class(self, href=self.url)
         model.load(response)
         self._models.append(model)
@@ -1151,14 +1087,14 @@ class SearchAttribute(base.QueryableModel):
     collection_class = SearchAttributeCollection
     path = 'search/attribute'
     data_key = 'search_attribute'
-    
-    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification', 
-              'entities' , 'attributes', 'fullTextResult', 'referredEntities')
+
+    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification',
+              'entities', 'attributes', 'fullTextResult', 'referredEntities')
     relationships = {'entities': Entity,
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
 
-    
+
 class SearchBasicCollection(base.QueryableModelCollection):
     def load(self, response):
         model = self.model_class(self, href=self.url)
@@ -1170,9 +1106,9 @@ class SearchBasic(base.QueryableModel):
     collection_class = SearchBasicCollection
     path = 'search/basic'
     data_key = 'search_basic'
-    
-    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification', 
-              'entities' , 'attributes', 'fullTextResult', 'referredEntities')
+
+    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification',
+              'entities', 'attributes', 'fullTextResult', 'referredEntities')
     relationships = {'entities': Entity,
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
@@ -1189,9 +1125,9 @@ class SearchDsl(base.QueryableModel):
     collection_class = SearchDslCollection
     path = 'search/dsl'
     data_key = 'search_dsl'
-    
-    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification', 
-              'entities' , 'attributes', 'fullTextResult', 'referredEntities')
+
+    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification',
+              'entities', 'attributes', 'fullTextResult', 'referredEntities')
     relationships = {'entities': Entity,
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
@@ -1208,9 +1144,8 @@ class SearchFulltext(base.QueryableModel):
     collection_class = SearchFulltextCollection
     path = 'search/fulltext'
     data_key = 'search_fulltext'
-    
-    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification', 
-              'entities' , 'attributes', 'fullTextResult', 'referredEntities')
+    fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification',
+              'entities', 'attributes', 'fullTextResult', 'referredEntities')
     relationships = {'entities': Entity,
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
