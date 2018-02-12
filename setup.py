@@ -33,7 +33,7 @@ setup(
     author="Jean-Baptiste Poullet",
     author_email='jeanbaptistepoullet@gmail.com',
     url='https://github.com/jpoullet2000/atlasclient',
-    packages=find_packages(include=['atlasclient'], exclude=['tests', 'tests.*']),
+    packages=find_packages(include=['atlasclient']),
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License 2.0",

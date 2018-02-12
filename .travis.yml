@@ -9,6 +9,7 @@ env:
                 - TOX_ENV=py27
                 - TOX_ENV=py35
                 - TOX_ENV=py36
+                - TOX_ENV=coverage
 install:
           - pip install --upgrade pip
           - pip install -r test_requirements.txt
