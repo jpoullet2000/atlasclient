@@ -3,3 +3,4 @@ pytest_mock>=1.6.3
 pytest_cov>=2.5.1
 tox
 tox-travis
+coveralls

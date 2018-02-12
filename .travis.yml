@@ -1,12 +1,5 @@
 language: python
 
-addons:
-        apt:
-                sources:
-                        - deadsnakes
-                packages:
-                        - python3.5
-                        - python3.6
 cache:
         directories:
                 - $HOME/.wheelhouse/
@@ -14,10 +7,13 @@ env:
         global:
                 - TRAVIS_CACHE=$HOME/.travis_cache/
         matrix:
-                - TOX_ENV=py27
-                - TOX_ENV=py35
-                - TOX_ENV=py36
-                - TOX_ENV=coverage
+                include:
+                        - TOX_ENV=py27
+                        - python: 3.5
+                          TOX_ENV=py35
+                        - python: 3.6
+                          TOX_ENV=py36
+                        - TOX_ENV=coverage
 install:
           - pip install --upgrade pip
           - pip install -r test_requirements.txt
