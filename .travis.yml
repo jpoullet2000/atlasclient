@@ -5,6 +5,8 @@ python:
           - "3.6"
 install:
           - "pip install pytest pytest_mock coveralls six"
+          - "pip  install -r requirements.txt"
+          - "pip install -r test_requirements.txt"
 script: 
         - pytest
 after_success:

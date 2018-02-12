@@ -4,6 +4,7 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
+import os
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -11,22 +12,18 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = [
-    'Click>=6.0',
-    'requests>=2.18.4',
-    # TODO: put package requirements here
-]
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
+test_requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_requirements.txt')
+setup_requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'setup_requirements.txt')
 
-setup_requirements = [
-    'pytest-runner',
-    # TODO(jpoullet2000): put setup requirements (distutils extensions, etc.) here
-]
+with open(requirements_path) as requirements_file:
+    requirements = requirements_file.readlines()
 
-test_requirements = [
-    'pytest',
-    'pytest_mock>=1.6.3',
-    # TODO: put package test requirements here
-]
+with open(test_requirements_path) as test_requirements_file:
+    test_requirements = test_requirements_file.readlines()
+
+with open(setup_requirements_path) as setup_requirements_file:
+    setup_requirements = setup_requirements_file.readlines()
 
 setup(
     name='atlasclient',
@@ -37,11 +34,6 @@ setup(
     author_email='jeanbaptistepoullet@gmail.com',
     url='https://github.com/jpoullet2000/atlasclient',
     packages=find_packages(include=['atlasclient']),
-    entry_points={
-        'console_scripts': [
-            'atlasclient=atlasclient.cli:main'
-        ]
-    },
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License 2.0",
@@ -53,12 +45,10 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     test_suite='tests',
     tests_require=test_requirements,
