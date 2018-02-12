@@ -23,6 +23,3 @@ install:
           - pip install -r test_requirements.txt
 script: 
         - tox -e $TOX_ENV
-
-after_success:
-        coveralls
