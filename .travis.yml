@@ -1,8 +1,9 @@
 language: python
-python:
-          - "2.7"
-          - "3.5"
-          - "3.6"
+env:
+        matrix:
+                - TOX_ENV=py27
+                - TOX_ENV=py35
+                - TOX_ENV=py36
 install:
           - "pip install pytest pytest_mock coveralls six"
           - "pip  install -r requirements.txt"
