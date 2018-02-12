@@ -22,11 +22,21 @@ Apache Atlas Client in Python
 
 
 Apache Atlas client in Python. 
-
+Only compatible with Apache Atlas REST API **v2**. 
 
 * Free software: Apache Software License 2.0
 * Documentation: https://atlasclient.readthedocs.io.
 
+Get started
+-----------
+
+    >>> from atlasclient.client import Atlas
+    >>> client = Atlas('<atlas.host>', port=21000, username='admin', password='admin')
+    >>> for t in client.typeDefs:
+            for e in t.enumDefs:
+                for el in e.elementDefs:
+                    print(ed.value)
+    >>> client.entityguid(<guid>).status
 
 Features
 --------
