@@ -9,8 +9,8 @@ Apache Atlas Client in Python
 .. image:: https://img.shields.io/travis/jpoullet2000/atlasclient.svg
         :target: https://travis-ci.org/jpoullet2000/atlasclient
 
-.. image:: https://coveralls.io/repos/github/jpoullet2000/atlasclient/badge.svg
-        :target: https://coveralls.io/github/jpoullet2000/atlasclient
+.. image:: https://coveralls.io/repos/github/jpoullet2000/atlasclient/badge.svg?branch=master
+        :target: https://coveralls.io/github/jpoullet2000/atlasclient?branch=master
 
 .. image:: https://readthedocs.org/projects/atlasclient/badge/?version=latest
         :target: https://atlasclient.readthedocs.io/en/latest/?badge=latest
