@@ -1,2 +1,0 @@
-# atlasclient
-Apache Atlas client 

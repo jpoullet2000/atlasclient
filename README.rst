@@ -28,6 +28,12 @@ Apache Atlas client in Python.
 Features
 --------
 
+* Lazy loading: requests are only performed when data are required and not yet available
+* Resource object relationships: REST API from sub-resources are done transparently for the user, for instance the user does not have to know that it needs to trigger a different REST request for getting the classifications of a specific entity.  
+
+TODO features  
+-------------
+
 * allow multiprocessing
 
 Credits

@@ -9,6 +9,6 @@ install:
           - "pip install -r test_requirements.txt"
           - "python setup.py -q install"
 script: 
-        - pytest
+        - pytest --cov=atlasclient tests/
 after_success:
         coveralls
