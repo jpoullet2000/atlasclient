@@ -48,11 +48,62 @@ To search for entities with a special attribute name::
            print(e.name)
            print(e.guid)
 
+TO BE CONTINUED...
+
 
 EntityREST
 ----------
 
-TO BE DONE...
+This section explains how to create entities, update or delete them.  
+
+Create Entity
+~~~~~~~~~~~~~
+
+To create an entity, one needs to create a Python dictionary which will define the entity. 
+This can be done from a json file::
+    
+    import json 
+    with open('my_entity_file.json') as json_file:
+        entity_dict = json.load(json_file)
+
+One can also just define the dictionary in Python. Note that if the user wants to pass a 'null' value, he should assign a value None in Python dictionary. It will be automatically convert to 'null' when requesting. 
+
+Once the entity dictionary is created, the entity can actually be created on Atlas with::
+
+    entity_post_collection = client.entity_post(data=entity_dict)
+    for e in entity_post_collection:
+        e.create()
+
+
+Get entity by GUID
+~~~~~~~~~~~~~~~~~~
+
+If you know the GUID of the entity you want to fetch, you can follow these steps to get all info about this entity::
+    
+    entity = client.entity_guid(GUID)
+    entity._data
+
+To access some specific attribute of that entity, say the description::
+
+    entity.entity['attributes']['description']
+
+Update entity by GUID
+~~~~~~~~~~~~~~~~~~~~~
+
+Suppose you want to change the description of the entity here above and send it to Atlas::
+
+    entity.entity['attributes']['description'] = 'my new description'
+    entity.update(attribute='description')
+
+
+Delete entity by GUID
+~~~~~~~~~~~~~~~~~~~~~
+
+To delete our entity::
+
+    entity.delete()
+
+TO BE CONTINUED...
 
 LineageREST
 -----------
