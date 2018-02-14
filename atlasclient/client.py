@@ -143,11 +143,15 @@ class HttpClient(object):
 
         if content_type is not None:
             params['headers']['Content-type'] = content_type
+        else:
+            params['headers']['Content-type'] = 'application/json' 
         LOG.debug("Request headers: %s", params['headers'])
 
         if 'data' in params and isinstance(params['data'], dict):
             params['data'] = json.dumps(params['data'], cls=AtlasJsonEncoder)
             LOG.debug("Request body: %s", params['data'])
+        elif 'data' in params and isinstance(params['data'], str):
+            params['data'] = json.dumps(params['data'])
 
         response = requests_method(url, **params)
 

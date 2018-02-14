@@ -1,0 +1,12 @@
+{
+  "list": [
+    {"typeName": "Confidential"},
+    {}
+  ],
+  "startIndex": 12345,
+  "pageSize": 12345,
+  "totalCount": 12345,
+  "sortType": "DESC",
+  "sortBy": "..."
+}
+

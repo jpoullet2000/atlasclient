@@ -272,11 +272,6 @@ class QueryableModelCollection(ModelCollection):
         In some rare cases, a collection can have an asynchronous request
         triggered.  For those cases, we handle it here.
         """
-#        if 'Requests' in response:
-#            from atlasclient.models import Request
-#            self.request = Request(self.parent.cluster.requests,
-#                                   href=response.get('href'),
-#                                   data=response['Requests'])
         if 'items' in response:
             self._models = []
             for item in response['items']:
@@ -645,12 +640,6 @@ class QueryableModel(Model):
         details are returned in a 'Requests' section. We need to store that
         request object so we can poll it until completion.
         """
-#        if 'Requests' in response and 'Requests' != self.data_key:
-#            from atlasclient.models import Request
-#            self.request = Request(self.cluster.requests,
-#                                   href=response.get('href'),
-#                                   data=response['Requests'])
-#        else:
         if 'href' in response:
             self._href = response.pop('href')
         if self.data_key and self.data_key in response:

@@ -21,13 +21,15 @@
       "typeName" : "...",
       "attributes" : {
         "property1" : { },
-        "property2" : { }
+        "property2" : { },
+        "description": "this is the description of the classification"
       }
     } ],
     "typeName" : "...",
     "attributes" : {
       "property1" : { },
-      "property2" : { }
+      "property2" : { },
+      "description": "this is the description of the entity"
     }
   },
   "referredEntities" : {

@@ -31,12 +31,20 @@ class EntityCollection(base.DependentModelCollection):
         self.client = client
         self.model_class = model_class
         self.parent = parent
-        self._is_inflated = False
+        self._is_inflated = True
         self._models = []
         for entity in self.parent._data['entities']:
             model = self.model_class(self, data=entity)
             self._models.append(model)
         self._iter_marker = 0
+    
+    def __call__(self, *args):
+        self._is_inflated = True
+        self._models = []
+        for entity in self.parent._data['entities']:
+            model = self.model_class(self, data=entity)
+            self._models.append(model)
+        return self
 
 
 class Entity(base.DependentModel):
@@ -88,31 +96,49 @@ class EntityPost(base.QueryableModel):
         """
         Update a resource by passing in modifications via keyword arguments.
         """
-        data = self._generate_input_dict(**kwargs)
-        self.client.post(self.url, data=data)
+        self.client.post(self.url, data=self._data)
         return self
+
+class ClassificationItemCollection(base.DependentModelCollection):
+    def __init__(self, client, model_class, parent=None):
+        self.client = client
+        self.model_class = model_class
+        self.parent = parent
+        self._is_inflated = False
+        self._models = []
+        for classification_item in self.parent._data['list']:
+            model = self.model_class(self, data=classification_item)
+            self._models.append(model)
+        self._iter_marker = 0
+
+
+class ClassificationItem(base.DependentModel):
+    collection_class = ClassificationItemCollection
+    fields = ('typeName', )
 
 
 class Classification(base.QueryableModel):
     path = 'classifications'
     data_key = 'classifications'
-    primary_key = 'typeName'
-    fields = ('typeName', 'attributes')
+    fields = ('sortType', 'list', 'totalCount', 'startIndex', 'pageSize')
+    relationships = {'list': ClassificationItem}
+    #primary_key = 'typeName'
+    #fields = ('typeName', 'attributes')
 
-    def _generate_input_dict(self, **kwargs):
-        if self.data_key:
-            data = {self.data_key: {}}
-            for field in kwargs:
-                if field in self.fields:
-                    data[self.data_key][field] = kwargs[field]
-                else:
-                    data[field] = kwargs[field]
-            for field in self.fields:
-                if hasattr(self, field) and field not in data[self.data_key].keys():
-                    data[self.data_key][field] = getattr(self, field)
-            return data
-        else:
-            return kwargs
+#    def _generate_input_dict(self, **kwargs):
+#        if self.data_key:
+#            data = {self.data_key: {}}
+#            for field in kwargs:
+#                if field in self.fields:
+#                    data[self.data_key][field] = kwargs[field]
+#                else:
+#                    data[field] = kwargs[field]
+#            for field in self.fields:
+#                if hasattr(self, field) and field not in data[self.data_key].keys():
+#                    data[self.data_key][field] = getattr(self, field)
+#            return data
+#        else:
+#            return kwargs
 
     @events.evented
     def create(self, **kwargs):
@@ -140,14 +166,20 @@ class Classification(base.QueryableModel):
 
 class EntityGuidClassificationCollection(base.QueryableModelCollection):
 
-    def _generate_input_dict(self, **kwargs):
-        data = {'classifications': []}
-        for model in self._models:
-            model_data = {}
-            for field in model.fields:
-                model_data[field] = getattr(model, field)
-            data['classifications'].append(model_data)
-        return data
+    def load(self, response):
+        model = self.model_class(self,
+                                 href=self.url)
+        model.load(response)
+        self._models.append(model)
+
+#    def _generate_input_dict(self, **kwargs):
+#        data = {'classifications': []}
+#        for model in self._models:
+#            model_data = {}
+#            for field in model.fields:
+#                model_data[field] = getattr(model, field)
+#            data['classifications'].append(model_data)
+#        return data
 
     @events.evented
     def update(self, **kwargs):
@@ -159,7 +191,13 @@ class EntityGuidClassificationCollection(base.QueryableModelCollection):
         return self
 
 
-class EntityGuidClassification(Classification):
+
+
+class EntityGuidClassification(base.QueryableModel):
+    path = 'classifications'
+    data_key = 'classifications'
+    fields = ('sortType', 'list', 'totalCount', 'startIndex', 'pageSize')
+    relationships = {'list': ClassificationItem}
     collection_class = EntityGuidClassificationCollection
 
 
@@ -173,6 +211,16 @@ class EntityGuid(base.QueryableModel):
 
     def _generate_input_dict(self, **kwargs):
         return self._data
+
+    
+    def update(self, attribute):
+        if attribute not in self.entity['attributes']:
+                raise exceptions.BadRequest(method=self.update, 
+                                            details='The attribute {} does not exist for {}'.format(attribute,
+                                                                                                    self.entity['typeName'])) 
+        self.load(self.client.put(self.url + '?name={}'.format(attribute),
+                                  data=self.entity['attributes'][attribute]))
+        return(self._data)
 
 
 class EntityBulkCollection(base.QueryableModelCollection):
@@ -189,6 +237,22 @@ class EntityBulk(base.QueryableModel):
     fields = ('entities', 'referredEntities')
     relationships = {'entities': Entity}
 
+    def inflate(self):
+        """Load the resource from the server, if not already loaded."""
+        if not self._is_inflated:
+            if self._is_inflating:
+                # catch infinite recursion when attempting to inflate
+                # an object that doesn't have enough data to inflate
+                msg = ("There is not enough data to inflate this object.  "
+                       "Need either an href: {} or a {}: {}")
+                msg = msg.format(self._href, self.primary_key, self._data.get(self.primary_key))
+                raise exceptions.ClientError(msg)
+
+            self._is_inflating = True
+            self.load(self._data)
+            self._is_inflated = True
+            self._is_inflating = False
+        return self
 
 class EntityBulkClassification(base.QueryableModel):
     path = 'entity/bulk/classification'
@@ -631,10 +695,11 @@ class FullTextResult(base.DependentModel):
 
 
 class SearchAttributeCollection(base.QueryableModelCollection):
-    def load(self, response):
-        model = self.model_class(self, href=self.url)
-        model.load(response)
-        self._models.append(model)
+    pass
+#    def load(self, response):
+#        model = self.model_class(self, href=self.url)
+#        model.load(response)
+#        self._models.append(model)
 
 
 class SearchAttribute(base.QueryableModel):
@@ -643,7 +708,7 @@ class SearchAttribute(base.QueryableModel):
     data_key = 'search_attribute'
     fields = ('queryType', 'searchParameters', 'queryText', 'type', 'classification',
               'entities', 'attributes', 'fullTextResult', 'referredEntities')
-
+    relationships = {'entities': Entity}
 
 class ConstraintCollection(base.DependentModelCollection):
     def __init__(self, client, model_class, parent=None):
@@ -1094,6 +1159,22 @@ class SearchAttribute(base.QueryableModel):
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
 
+    def inflate(self):
+        """Load the resource from the server, if not already loaded."""
+        if not self._is_inflated:
+            if self._is_inflating:
+                # catch infinite recursion when attempting to inflate
+                # an object that doesn't have enough data to inflate
+                msg = ("There is not enough data to inflate this object.  "
+                       "Need either an href: {} or a {}: {}")
+                msg = msg.format(self._href, self.primary_key, self._data.get(self.primary_key))
+                raise exceptions.ClientError(msg)
+
+            self._is_inflating = True
+            self.load(self._data)
+            self._is_inflated = True
+            self._is_inflating = False
+        return self
 
 class SearchBasicCollection(base.QueryableModelCollection):
     def load(self, response):
