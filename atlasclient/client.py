@@ -31,6 +31,7 @@ ENTRY_POINTS = {'entity_guid': models.EntityGuid,
                 'entity_post': models.EntityPost,
                 'entity_bulk': models.EntityBulk,
                 'entity_bulk_classification': models.EntityBulkClassification,
+                'entity_unique_attribute': models.EntityUniqueAttribute,
                 'typedefs_headers': models.TypeDefHeader,
                 'classificationdef_guid': models.ClassificationDefGuid,
                 'classificationdef_name': models.ClassificationDefName,
@@ -59,18 +60,6 @@ class Atlas(object):
 
     This is the entry point to the Atlas API. Create this client and then
     use one of the entry points to start hitting Atlas object collections.
-
-    Ex:
-
-    client = Atlas('localhost', port=8080, username='admin', password='admin')
-    for host in client.hosts:
-        host.maintenance.enable()
-
-    client.clusters.create('my-cluster', blueprint='my-blueprint', host_groups=[...])
-
-    for component in client.clusters('my-cluster').services('HBASE').components:
-        print component.to_dict()
-
     """
     def __init__(self, host, port=None, username=None, password=None,
                  identifier=None, protocol=None, validate_ssl=True,
@@ -151,6 +140,8 @@ class HttpClient(object):
             params['data'] = json.dumps(params['data'], cls=AtlasJsonEncoder)
             LOG.debug("Request body: %s", params['data'])
         elif 'data' in params and isinstance(params['data'], str):
+            params['data'] = json.dumps(params['data'])
+        elif 'data' in params and isinstance(params['data'], list):
             params['data'] = json.dumps(params['data'])
 
         response = requests_method(url, **params)

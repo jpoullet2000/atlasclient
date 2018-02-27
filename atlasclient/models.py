@@ -18,6 +18,7 @@ import logging
 import json
 import os
 import time
+import six
 
 from atlasclient import base, exceptions, events
 from atlasclient.utils import normalize_underscore_case, NullHandler
@@ -172,30 +173,40 @@ class EntityGuidClassificationCollection(base.QueryableModelCollection):
         model.load(response)
         self._models.append(model)
 
-#    def _generate_input_dict(self, **kwargs):
-#        data = {'classifications': []}
-#        for model in self._models:
-#            model_data = {}
-#            for field in model.fields:
-#                model_data[field] = getattr(model, field)
-#            data['classifications'].append(model_data)
-#        return data
+    def _generate_input_dict(self, **kwargs):
+        data = {'classifications': []}
+        for model in self._models:
+            model_data = {}
+            for field in model.fields:
+                model_data[field] = getattr(model, field)
+            data['classifications'].append(model_data)
+        return data
 
     @events.evented
     def update(self, **kwargs):
         """Update a resource by passing in modifications via keyword arguments.
 
         """
-        data = self._generate_input_dict(**kwargs)
+        data = []
+        for c in self:
+            for classification_item in c.list:
+                class_item_dict = dict()
+                for field in classification_item.fields:
+                        class_item_dict[field] = getattr(classification_item, field)
+                data.append(class_item_dict)
         self.load(self.client.put(self.url, data=data))
         return self
 
-
+    def create(self, data, **kwargs):
+        """ 
+        Create classifitions for specific entity
+        """
+        self.client.post(self.url, data=data)
 
 
 class EntityGuidClassification(base.QueryableModel):
     path = 'classifications'
-    data_key = 'classifications'
+    #data_key = 'classifications'
     fields = ('sortType', 'list', 'totalCount', 'startIndex', 'pageSize')
     relationships = {'list': ClassificationItem}
     collection_class = EntityGuidClassificationCollection
@@ -223,11 +234,57 @@ class EntityGuid(base.QueryableModel):
         return(self._data)
 
 
+class EntityUniqueAttributeCollection(base.QueryableModelCollection):
+    def __call__(self, *args, **kwargs):
+        if len(args) == 1:
+            identifier = str(args[0])
+
+        if kwargs is None:
+                raise exceptions.BadRequest(details='An attribute should be given (e.g. qualifiedName="/my/hdfs/path")')
+        
+        self._is_inflated = False
+        self._filter = {}
+        self._models = []
+        if kwargs:
+            prefix = self.model_class.data_key
+            for (key, value) in kwargs.items():
+                if self.model_class.use_key_prefix:
+                    key = '/'.join([prefix, key])
+                if not isinstance(value, six.string_types):
+                    value = json.dumps(value)
+                self._filter[key] = value
+        filter_list = ['{}={}'.format(k, v) for k, v in self._filter.items()]
+        return self.model_class(self, href='/'.join([self.url, identifier]) + '?attr:' + '&'.join(filter_list),
+                                data={self.model_class.primary_key: identifier})
+
+
+class EntityUniqueAttribute(base.QueryableModel):
+    collection_class = EntityUniqueAttributeCollection
+    path = 'entity/uniqueAttribute/type'
+    data_key = 'entity_unique_attribute'
+    primary_key = 'typeName'
+    fields = ('entity', 'referredEntities')
+    relationships = {'classifications': EntityGuidClassification,
+                     }
+
+
 class EntityBulkCollection(base.QueryableModelCollection):
     def load(self, response):
         model = self.model_class(self, href=self.url)
         model.load(response)
         self._models.append(model)
+
+    def create(self, data, **kwargs):
+        """ 
+        Create classifitions for specific entity
+        """
+        self.client.post(self.url, data=data)
+    
+    def delete(self, guid):
+         """
+         Delete guid 
+         """
+         self.client.delete(self.url, params={'guid': guid})
 
 
 class EntityBulk(base.QueryableModel):
@@ -254,6 +311,7 @@ class EntityBulk(base.QueryableModel):
             self._is_inflating = False
         return self
 
+
 class EntityBulkClassification(base.QueryableModel):
     path = 'entity/bulk/classification'
     data_key = 'entity_bulk_classification'
@@ -261,6 +319,12 @@ class EntityBulkClassification(base.QueryableModel):
 
     def _generate_input_dict(self, **kwargs):
         return(kwargs)
+
+    def create(self, data, **kwargs):
+        """ 
+        Create classifitions for specific entity
+        """
+        self.client.post(self.url, data=data)
 
 
 class ConstraintCollection(base.DependentModelCollection):
@@ -608,13 +672,39 @@ class LineageGuidRelation(base.DependentModel):
               )
 
 
+class LineageGuidCollection(base.QueryableModelCollection):
+    def __call__(self, *args, **kwargs):
+        if len(args) == 1:
+            identifier = str(args[0])
+
+        if kwargs is None:
+                raise exceptions.BadRequest(details='An attribute should be given (e.g. qualifiedName="/my/hdfs/path")')
+        
+        self._is_inflated = False
+        self._filter = {}
+        self._models = []
+        url_path_filter = ''
+        if kwargs:
+            prefix = self.model_class.data_key
+            for (key, value) in kwargs.items():
+                if self.model_class.use_key_prefix:
+                    key = '/'.join([prefix, key])
+                if not isinstance(value, six.string_types):
+                    value = json.dumps(value)
+                self._filter[key] = value
+            filter_list = ['{}={}'.format(k, v) for k, v in self._filter.items()]
+            url_path_filter = '?' + '&'.join(filter_list)
+        return self.model_class(self, href='/'.join([self.url, identifier]) + url_path_filter, 
+                                data={self.model_class.primary_key: identifier})
+    
+
 class LineageGuid(base.QueryableModel):
-    path = 'lineage/guid'
+    path = 'lineage'
     data_key = 'lineage_guid'
-    primary_key = 'guid'
     fields = ('baseEntityGuid', 'guidEntityMap', 'property1', 'property2', 'relations', 'lineageDirection', 'lineageDepth')
     relationships = {'relations': LineageGuidRelation}
-
+    collection_class = LineageGuidCollection
+ 
 
 class RelationshipGuid(base.QueryableModel):
     path = 'relationship/guid'
@@ -1047,20 +1137,20 @@ class LineageGuidRelationCollection(base.DependentModelCollection):
     pass
 
 
-class LineageGuidRelation(base.DependentModel):
-    collection_class = LineageGuidRelationCollection
-    data_key = 'lineage_guid_relations'
-    fields = ('fromEntityId',
-              'toEntityId',
-              )
-
-
-class LineageGuid(base.QueryableModel):
-    path = 'lineage/guid'
-    data_key = 'lineage_guid'
-    primary_key = 'guid'
-    fields = ('baseEntityGuid', 'guidEntityMap', 'property1', 'property2', 'relations', 'lineageDirection', 'lineageDepth')
-    relationships = {'relations': LineageGuidRelation}
+#class LineageGuidRelation(base.DependentModel):
+#    collection_class = LineageGuidRelationCollection
+#    data_key = 'lineage_guid_relations'
+#    fields = ('fromEntityId',
+#              'toEntityId',
+#              )
+#
+#
+#class LineageGuid(base.QueryableModel):
+#    path = 'lineage/guid'
+#    data_key = 'lineage_guid'
+#    primary_key = 'guid'
+#    fields = ('baseEntityGuid', 'guidEntityMap', 'property1', 'property2', 'relations', 'lineageDirection', 'lineageDepth')
+#    relationships = {'relations': LineageGuidRelation}
 
 
 class RelationshipGuid(base.QueryableModel):

@@ -573,6 +573,10 @@ class QueryableModel(Model):
             self._href = kwargs.pop('href')
             if self._href is not None:
                 self._href = self._href.replace('classifications/', 'classification/')
+#                if 'uniqueAttribute' in self._href:
+#                        if 'typeName' not in kwargs:
+#                            raise
+#                        self._href += '/{}'.format(kwargs['typeName'])  
         else:
             self._href = None
         self._is_inflating = False
