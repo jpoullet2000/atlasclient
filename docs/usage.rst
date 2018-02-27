@@ -87,6 +87,11 @@ To access some specific attribute of that entity, say the description::
 
     entity.entity['attributes']['description']
 
+It shows up as a dictionary. So one can get the list of all attributes with::
+
+    entity.entity['attributes'].keys()
+
+
 Update entity by GUID
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -103,12 +108,155 @@ To delete our entity::
 
     entity.delete()
 
-TO BE CONTINUED...
+
+Get classifications by GUID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To get all classification type names related to an entity GUID::
+
+     entity = client.entity(GUID)
+     for classification_info in entity.classifications:
+         for classification_item in classification_info.list:
+             print(classification_item.typeName)
+
+
+Update classifications by GUID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To update classifications to an existing entity represented by a guid::
+
+     entity = client.entity(GUID)
+     for classification_info in entity.classifications:
+         for classification_item in classification_info.list:
+             if classification_item.typeName == 'Semi-Confidential'
+                 classification_item.typeName = 'Confidential'
+     entity.classifications.update()
+
+The entity will now be tagged as 'Confidential' instead of 'Semi-Confidential'. 
+
+     
+Create classifications by GUID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To add classifications to an existing GUID:: 
+
+   new_classifications = [{"typeName": "Confidential"},
+	                  {"typeName": "Customer"}
+                         ]
+   entity = client.entity(GUID)
+   entity.classifications.create(data=new_classifications)
+ 
+This will create 2 new classifications for the entity.
+
+Get classification info by GUID and by classification type name
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To get info about some specific classification for some entity::
+
+    
+     entity = client.entity(GUID)
+     entity.classifications('Confidential').refresh()._data
+
+The refresh() method is used to load data from the Atlas server, which is then stored in the _data attribute. 
+
+To get some specific info about the classification, say the 'totalCount'::
+
+    entity.classifications('Confidential').totalCount
+
+In that case, no need to use the refresh method since the client will see that the attribute totalCount is not yet available and will therefore send a request to the Atlas server.
+
+
+Delete a classification by GUID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To delete a given classification from an existing entity represented by a GUID::
+
+    client.entity_guid(GUID).classications('Confidential').delete()
+
+This will delete the classification 'Confidential' for that specific entity only.
+ 
+
+Get entities by bulk
+~~~~~~~~~~~~~~~~~~~~
+
+To retrieve list of entities identified by its GUIDs::
+
+    bulk_collection = client.entity_bulk(guid=[GUID1, GUID2])
+
+
+Create entities by bulk
+~~~~~~~~~~~~~~~~~~~~~~~
+
+To create entities:: 
+
+    bulk = {"entities" : [ {
+		    "attributes": {"qualifiedName": "my_awesome_data", "name": "my_awesome_data_name", "path": "/my-awesome-path"},
+		    "status" : "ACTIVE",
+		    "version" : 3,
+		    "classifications" : [ {"typeName" : "Customer"}, {"typeName" : "Confidential"}],
+		    "typeName" : "hdfs_path"}],
+             "referredEntities": {}
+            }
+    client.entity_bulk.create(data=bulk)
+
+This will create an hdfs_path entity with 2 classifications.
+Note that you can pass a list of entities (not limited to 1). 
+
+
+Delete multiple entities
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+To delete a list of entities::
+
+    client.entity_bulk.delete(guid=[GUID1, GUID2])
+
+
+Associate a tag to multiple entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To associate a tag to multiple entities::
+
+    entity_bulk_tag = {"classification": {"typeName": "Confidential"},
+	               "entityGuids": [GUID1, GUID2]}
+    client.entity_bulk_classification.create(data=entity_bulk_tag) 
+
+This will create the tag 'Confidential' both GUIDs.
+
+
+Get entity by unique attribute
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To fetch an entity given its type and unique attribute::
+
+    entity = client.entity_unique_attribute('hdfs_path', qualifiedName='/my/awesome/path')
+
+
+Update entity for subset of attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ To update a subset of attributes on an entity which is identified by its type and unique attribute::
+
+    ####  TO BE IMPLEMENTED ####
+
+
+To delete an entity by unique attribute
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To delete an entity identified by its type and unique attributes::
+
+    entity = client.entity_unique_attribute('hdfs_path', qualifiedName='/my/awesome/path')
+    entity.delete()
+
 
 LineageREST
 -----------
 
-TO BE DONE...
+Get lineage by GUID
+~~~~~~~~~~~~~~~~~~~
+
+To get lineage info about entity identified by GUID::
+
+    client.lineage_guid(GUID)
 
 RelationshipREST
 ----------------

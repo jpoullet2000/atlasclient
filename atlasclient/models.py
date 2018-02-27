@@ -786,10 +786,6 @@ class FullTextResult(base.DependentModel):
 
 class SearchAttributeCollection(base.QueryableModelCollection):
     pass
-#    def load(self, response):
-#        model = self.model_class(self, href=self.url)
-#        model.load(response)
-#        self._models.append(model)
 
 
 class SearchAttribute(base.QueryableModel):
@@ -1135,22 +1131,6 @@ class TypeDefName(base.QueryableModel):
 
 class LineageGuidRelationCollection(base.DependentModelCollection):
     pass
-
-
-#class LineageGuidRelation(base.DependentModel):
-#    collection_class = LineageGuidRelationCollection
-#    data_key = 'lineage_guid_relations'
-#    fields = ('fromEntityId',
-#              'toEntityId',
-#              )
-#
-#
-#class LineageGuid(base.QueryableModel):
-#    path = 'lineage/guid'
-#    data_key = 'lineage_guid'
-#    primary_key = 'guid'
-#    fields = ('baseEntityGuid', 'guidEntityMap', 'property1', 'property2', 'relations', 'lineageDirection', 'lineageDepth')
-#    relationships = {'relations': LineageGuidRelation}
 
 
 class RelationshipGuid(base.QueryableModel):
