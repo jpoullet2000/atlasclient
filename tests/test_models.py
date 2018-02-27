@@ -97,17 +97,21 @@ class TestEntityREST():
     def test_entity_post(self, mocker, atlas_client, entity_guid_response, entity_post_response):
         mocker.patch.object(atlas_client.client, 'get')
         atlas_client.client.get.return_value = entity_guid_response
-        entity_collection = atlas_client.entity_post(data=entity_guid_response) 
-        for e in entity_collection:
-            assert e._data == entity_guid_response
-            mocker.patch.object(e.client, 'post')
-            e.client.post.return_value = entity_guid_response 
-            e.create()
-            e.client.post.assert_called_with(e._href, data=e._data)
-            with pytest.raises(exceptions.MethodNotImplemented) as err:
-                e.update()
-            with pytest.raises(exceptions.MethodNotImplemented) as err:
-                e.delete()
+        mocker.patch.object(atlas_client.entity_post.client, 'post')
+        atlas_client.client.post.return_value = entity_guid_response
+        atlas_client.entity_post.create(data=entity_guid_response)
+        atlas_client.entity_post.client.post.assert_called_with(atlas_client.entity_post.url, data=entity_guid_response)
+
+#        for e in entity_collection:
+#            assert e._data == entity_guid_response
+#            mocker.patch.object(e.client, 'post')
+#            e.client.post.return_value = entity_guid_response 
+#            e.create()
+#            e.client.post.assert_called_with(e._href, data=e._data)
+#            with pytest.raises(exceptions.MethodNotImplemented) as err:
+#                e.update()
+#            with pytest.raises(exceptions.MethodNotImplemented) as err:
+#                e.delete()
 
     def test_entity_bulk_get(self, mocker, atlas_client, entity_bulk_response):
         mocker.patch.object(atlas_client.client, 'get')

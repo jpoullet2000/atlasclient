@@ -70,9 +70,7 @@ One can also just define the dictionary in Python. Note that if the user wants t
 
 Once the entity dictionary is created, the entity can actually be created on Atlas with::
 
-    entity_post_collection = client.entity_post(data=entity_dict)
-    for e in entity_post_collection:
-        e.create()
+    client.entity_post.create(data=entity_dict)
 
 
 Get entity by GUID
@@ -265,5 +263,11 @@ TO BE DONE...
 
 TypesREST
 ---------
+
+    for t in client.typeDefs:
+        for e in t.enumDefs:
+            for el in e.elementDefs:
+                print(ed.value)
+    client.entityguid(<guid>).status
 
 TO BE DONE...

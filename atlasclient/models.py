@@ -67,6 +67,13 @@ class EntityPostCollection(base.QueryableModelCollection):
         self._models.append(model)
         return self
 
+    @events.evented
+    def create(self, data, **kwargs):
+        """
+        Update a resource by passing in modifications via keyword arguments.
+        """
+        self.client.post(self.url, data=data)
+
 
 class EntityPost(base.QueryableModel):
     """
@@ -91,14 +98,6 @@ class EntityPost(base.QueryableModel):
         Update is not allowed for this resource
         """
         raise exceptions.MethodNotImplemented(method=self.update, details='The method update is not available for this resource')
-
-    @events.evented
-    def create(self, **kwargs):
-        """
-        Update a resource by passing in modifications via keyword arguments.
-        """
-        self.client.post(self.url, data=self._data)
-        return self
 
 class ClassificationItemCollection(base.DependentModelCollection):
     def __init__(self, client, model_class, parent=None):

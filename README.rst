@@ -32,11 +32,16 @@ Get started
 
     >>> from atlasclient.client import Atlas
     >>> client = Atlas('<atlas.host>', port=21000, username='admin', password='admin')
-    >>> for t in client.typeDefs:
-            for e in t.enumDefs:
-                for el in e.elementDefs:
-                    print(ed.value)
     >>> client.entityguid(<guid>).status
+    >>> params = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit':'10'} 
+    >>> search_results = client.search_attribute(**params) 
+    >>> for s in search_results:
+    ...    for e in s.entities:
+    ...         print(e.name)
+    ...         print(e.guid)
+
+
+
 
 Features
 --------
