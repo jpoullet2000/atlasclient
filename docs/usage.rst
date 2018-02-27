@@ -264,10 +264,113 @@ TO BE DONE...
 TypesREST
 ---------
 
+Get typeDefs
+~~~~~~~~~~~~
+
+Typedefs can be seen as a collection of type definitions in Atlas and can accessed with::
+
+    client.typeDefs
+
+This only creates an object is not actually requesting the Atlas server. 
+Suppose we want to access all elements of type 'enumDefs':: 
+
     for t in client.typeDefs:
         for e in t.enumDefs:
             for el in e.elementDefs:
-                print(ed.value)
-    client.entityguid(<guid>).status
+                print(el.value)
+
+We can access the classification types in a similar way::
+
+    for t in client.typeDefs:
+        for classification_type in t.classificationDefs:
+            print(classification_type.description)
+
+
+Delete typeDefs
+~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Create typeDefs
+~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Update typeDefs
+~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Get typeDefs headers
+~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Get classificationDefs by GUID 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+Get classificationDefs by name 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Get entityDefs by GUID 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+Get entityDefs by name 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Get enumDefs by GUID 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+Get enumDefs by name 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Get relationshipDefs by GUID 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+Get relationshipDefs by name 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Get structDefs by GUID 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+Get structDefs by name 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+
+Get typeDefs by GUID 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TO BE DONE...
+
+Get typeDefs by name 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 TO BE DONE...

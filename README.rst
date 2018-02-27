@@ -41,8 +41,6 @@ Get started
     ...         print(e.guid)
 
 
-
-
 Features
 --------
 
