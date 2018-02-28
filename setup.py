@@ -36,7 +36,7 @@ setup(
     packages=find_packages(include=['atlasclient']),
     include_package_data=True,
     install_requires=requirements,
-    license="Apache Software License 2.0",
+    license='Apache Software License 2.0',
     zip_safe=False,
     keywords='atlasclient',
     classifiers=[
@@ -52,5 +52,5 @@ setup(
     ],
     test_suite='tests',
     tests_require=test_requirements,
-    setup_requires=setup_requirements,
+    #setup_requires=setup_requirements,
 )

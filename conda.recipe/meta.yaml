@@ -1,0 +1,28 @@
+{% set data = load_setup_py_data() %}
+
+about:
+  home: {{ data['url'] }}
+  license: {{ data['license'] }}
+
+source:
+  path: ../
+
+package:
+  name: atlasclient
+  version: {{ data['version'] }}
+
+requirements:
+  build: 
+    - python
+    - setuptools
+    - pytest-runner
+    {% for dep in data['install_requires'] %}
+    - {{ dep.lower() }}
+    {% endfor %}
+
+  run: 
+    - python
+
+test:
+  imports:
+    - atlasclient

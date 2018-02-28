@@ -1,2 +1,2 @@
-Click>=6.0
-requests>=2.18.4
+Click >=6.0
+requests >=2.18.4
