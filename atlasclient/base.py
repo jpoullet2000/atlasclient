@@ -177,13 +177,6 @@ class QueryableModelCollection(ModelCollection):
     but they can be preloaded with data by passing in a list of dictionaries.
     This comes in handy because the Atlas API often returns related objects
     when you do a GET call on a specific resource.  So for example:
-
-    client.clusters(cluster_name).hosts
-
-    Will call GET /clusters/<cluster_name>
-    Which returns all of the basic host information that then pre-populates
-    the hosts collection and avoids having to query the server for that data
-    when you act on the host objects it contains.
     """
     def __init__(self, *args, **kwargs):
         super(QueryableModelCollection, self).__init__(*args, **kwargs)
@@ -260,40 +253,25 @@ class QueryableModelCollection(ModelCollection):
     def load(self, response):
         """Parse the GET response for the collection.
 
-        The response from a GET request against that url should look like:
-            { 'items': [ item1, item2, ... ] }
-         or just [item1, item2] if 'items' key does not exist
-
-        While each of the item objects is usually a subset of the information
-        for each model, it generally includes the URL needed to load the full
-        data in an 'href' key.  This information is used to lazy-load the
-        details on the model, when needed.
+        This operates as a lazy-loader, meaning that the data are only downloaded 
+        from the server if there are not already loaded. 
+        Collection items are loaded sequentially.
 
         In some rare cases, a collection can have an asynchronous request
         triggered.  For those cases, we handle it here.
         """
-        if 'items' in response:
-            self._models = []
-            for item in response['items']:
-                model = self.model_class(
-                    self,
-                    href=item.get('href').replace('classifications/', 'classification/')
-                )
-                model.load(item)
+        self._models = []
+        if isinstance(response, dict):
+            for key in response.keys():
+                model = self.model_class(self, href='')
+                model.load(response[key])
                 self._models.append(model)
         else:
-            self._models = []
-            if isinstance(response, dict):
-                for key in response.keys():
-                    model = self.model_class(self, href='')
-                    model.load(response[key])
-                    self._models.append(model)
-            else:
-                for item in response:
-                    model = self.model_class(self,
-                                             href=item.get('href'))
-                    model.load(item)
-                    self._models.append(model)
+            for item in response:
+                model = self.model_class(self,
+                                         href=item.get('href'))
+                model.load(item)
+                self._models.append(model)
 
     def create(self, *args, **kwargs):
         """Add a resource to this collection."""
@@ -573,10 +551,6 @@ class QueryableModel(Model):
             self._href = kwargs.pop('href')
             if self._href is not None:
                 self._href = self._href.replace('classifications/', 'classification/')
-#                if 'uniqueAttribute' in self._href:
-#                        if 'typeName' not in kwargs:
-#                            raise
-#                        self._href += '/{}'.format(kwargs['typeName'])  
         else:
             self._href = None
         self._is_inflating = False
@@ -593,7 +567,7 @@ class QueryableModel(Model):
         if self._href is not None:
             return self._href
         if self.identifier:
-            # for some reason atlas does not use classifications here in the path when considering one classification
+            #  for some reason atlas does not use classifications here in the path when considering one classification
             path = '/'.join([self.parent.url.replace('classifications/', 'classficiation/'), self.identifier])
             return path
         raise exceptions.ClientError("Not able to determine object URL")
@@ -602,8 +576,8 @@ class QueryableModel(Model):
         """Load the resource from the server, if not already loaded."""
         if not self._is_inflated:
             if self._is_inflating:
-                # catch infinite recursion when attempting to inflate
-                # an object that doesn't have enough data to inflate
+                #  catch infinite recursion when attempting to inflate
+                #  an object that doesn't have enough data to inflate
                 msg = ("There is not enough data to inflate this object.  "
                        "Need either an href: {} or a {}: {}")
                 msg = msg.format(self._href, self.primary_key, self._data.get(self.primary_key))
@@ -648,7 +622,7 @@ class QueryableModel(Model):
             self._href = response.pop('href')
         if self.data_key and self.data_key in response:
             self._data.update(response.pop(self.data_key))
-            # preload related object collections, if received
+            #  preload related object collections, if received
             for rel in [x for x in self.relationships if x in response and response[x]]:
                 rel_class = self.relationships[rel]
                 collection = rel_class.collection_class(
