@@ -22,12 +22,25 @@ The following groups of resources can be accessed:
 Below a few examples to access some of the resources. 
 
 Make sure atlasclient is properly installed (see `here <installation.html>`__).
+
 First you need to create a connection object:: 
 
-     from atlasclient.client import Atlas
-     client = Atlas(your_atlas_host, port=21000, username='admin', password='admin')
+    from atlasclient.client import Atlas
+    client = Atlas(your_atlas_host, port=21000, username='admin', password='admin')
 
 Replace `your_atlas_host` by the actual host name of the Atlas server. Note that port 21000 might also be different in your case. Port 21000 is default port when using HTTP with Atlas, and 21443 for HTTPS. 
+
+To access the list of entry points::
+
+    from atlasclient.client import ENTRY_POINTS
+    ENTRY_POINTS
+
+You'll get a dictionary with ('key': 'value') corresponding to ('client method': 'model class'): `{'entity_guid': <class 'atlasclient.models.EntityGuid'>, ...}`. 
+For example, we can use::
+
+    client.entity_guid(GUID)
+
+'entity_guid' is used as a method of the 'client' object.
 
 
 DiscoveryREST
@@ -35,20 +48,47 @@ DiscoveryREST
 
 This section explains how you can search for entities per attribute name, or search using a SQL-like query, and more ;). 
 
+
+Search by attribute
+~~~~~~~~~~~~~~~~~~~
+
 To search for entities with a special attribute name::
 
-   params = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit':'10'} 
-   search_results = client.search_attribute(**params) 
-   #  Info about all entities in one dict
-   for s in search_results:
-       print(s._data)
-   #  Getting name and guid of each entity 
-   for s in search_results:
-       for e in s.entities:
-           print(e.name)
-           print(e.guid)
+    params = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit': '10'} 
+    search_results = client.search_attribute(**params) 
+    #  Info about all entities in one dict
+    for s in search_results:
+        print(s._data)
+    #  Getting name and guid of each entity 
+    for s in search_results:
+        for e in s.entities:
+            print(e.name)
+            print(e.guid)
 
-TO BE CONTINUED...
+
+Search with basic terms
+~~~~~~~~~~~~~~~~~~~~~~~
+
+To retrieve data for the specified full text query:: 
+
+    params = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit': '10'} 
+    search_results = client.search_basic(**params)
+    for s in search_results:
+        for e in s.entities
+            print(e.guid)
+
+
+Search by DSL
+~~~~~~~~~~~~~
+
+To retrieve data for the specified DSL::
+
+    params = {'typeName': 'hdfs_path', 'classification': 'Confidential'}
+    search_results = client.search_dsl(**params)
+    for s in search_results:
+        for e in s.entities:
+            print(e.classificationNames)
+            print(e.attributes)
 
 
 EntityREST
@@ -254,7 +294,10 @@ Get lineage by GUID
 
 To get lineage info about entity identified by GUID::
 
-    client.lineage_guid(GUID)
+    lineage = client.lineage_guid(GUID)
+    print(lineage.relations)
+    print(lineage.lineageDirection)
+
 
 RelationshipREST
 ----------------
@@ -285,6 +328,8 @@ We can access the classification types in a similar way::
         for classification_type in t.classificationDefs:
             print(classification_type.description)
 
+Idem for entityDefs and structDefs. 
+
 
 Delete typeDefs
 ~~~~~~~~~~~~~~~
@@ -307,70 +352,121 @@ TO BE DONE...
 Get typeDefs headers
 ~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get typedefs headers::
+
+    for header in client.typedefs_headers:
+        print(header.name)
+        print(header.category)
 
 
 Get classificationDefs by GUID 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get classificationdefs by GUID::
+
+    class_defs = client.classificationdef_guid(CLASSIFICATION_GUID)
+    class_defs.name
+    class_defs._data
+
 
 Get classificationDefs by name 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get classificationdefs by name::
+    
+    CLASSIFICATION_NAME = 'Confidential'
+    class_defs = client.classificationdef_name(CLASSIFICATION_NAME)
+    class_defs.description
 
 
 Get entityDefs by GUID 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get entitydefs by GUID::
+    
+    entity_defs = client.entitydef_guid(ENTITY_GUID)
+    entity_defs.description
+    
 
 Get entityDefs by name 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get entitydefs by name::
+
+    ENTITY_NAME = 'hdfs_path'
+    entity_defs = client.entitydef_name(ENTITY_NAME)
+    entity_defs.description
 
 
 Get enumDefs by GUID 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+
+To get enumdefs by GUID::
+
+    enum_defs = client.enumdef_guid(ENUM_GUID)
+    enum_defs.elementDefs
+
 
 Get enumDefs by name 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get enumdefs by name::
+
+    ENUM_NAME = 'file_action'
+    enum_defs = client.enumdef_name(ENUM_NAME)
+    enum_defs.elementDefs
 
 
 Get relationshipDefs by GUID 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get relationshipdefs by GUID::
+
+    relationship_defs = client.relationshipdef_guid(RELATIONSHIP_GUID)
+    relationship_defs._data
+
 
 Get relationshipDefs by name 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get relationshipdefs by name::
+
+    relationship_defs = client.relationshipdef_guid(RELATIONSHIP_NAME)
+    relationship_defs._data
 
 
 Get structDefs by GUID 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get structdefs by GUID::
+
+    struct_defs = client.structdef_guid(STRUCT_GUID)
+    struct_defs._data
 
 Get structDefs by name 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get structdefs by name::
+
+    struct_defs = client.structdef_guid(STRUCT_NAME)
+    struct_defs._data
 
 
 Get typeDefs by GUID 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get typedefs by GUID::
+
+    type_defs = client.typedef_guid(TYPE_GUID)
+    type_defs._data
+
 
 Get typeDefs by name 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To get typedefs by name::
+
+    type_defs = client.typedef_guid(TYPE_NAME)
+    type_defs._data
+

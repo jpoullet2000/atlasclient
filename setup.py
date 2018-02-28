@@ -5,11 +5,17 @@
 
 from setuptools import setup, find_packages
 import os
+import sys
 
-with open('README.rst') as readme_file:
+here = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, here)
+from atlasclient import __version__ as version
+
+
+with open(os.path.join(here, 'README.rst')) as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
+with open(os.path.join(here, 'HISTORY.rst')) as history_file:
     history = history_file.read()
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
@@ -25,9 +31,10 @@ with open(test_requirements_path) as test_requirements_file:
 with open(setup_requirements_path) as setup_requirements_file:
     setup_requirements = setup_requirements_file.readlines()
 
-setup(
+setup_args = {}
+setup_args = dict(
     name='atlasclient',
-    version='0.1.0',
+    version=version,
     description="Apache Atlas client",
     long_description=readme + '\n\n' + history,
     author="Jean-Baptiste Poullet",
@@ -54,3 +61,5 @@ setup(
     tests_require=test_requirements,
     #setup_requires=setup_requirements,
 )
+
+setup(**setup_args)
