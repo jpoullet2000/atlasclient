@@ -22,6 +22,9 @@ requirements:
 
   run: 
     - python
+    {% for dep in data['install_requires'] %}
+    - {{ dep.lower() }}
+    {% endfor %}
 
 test:
   imports:
