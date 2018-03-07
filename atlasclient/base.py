@@ -408,7 +408,9 @@ class Model(object):
         fields_dict = dict()
         for field in self.fields: 
             fields_dict[field] = field
-        d1 = dict(self.__dict__, **fields_dict, **self.relationships) 
+        d1 = {}
+        for item in [self.__dict__, fields_dict, self.relationships]:
+            d1.update(item)
         return d1.keys() 
 
     @property

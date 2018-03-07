@@ -77,7 +77,9 @@ class Atlas(object):
         self._version = None
 
     def __dir__(self):
-        d1 = dict(self.__dict__, **ENTRY_POINTS)
+        d1 = {}
+        d1.update(self.__dict__)
+        d1.update(ENTRY_POINTS)
         return d1.keys()
 
     def check_version(self):
