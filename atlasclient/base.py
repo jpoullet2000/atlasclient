@@ -405,7 +405,11 @@ class Model(object):
         self._relationship_cache = {}
 
     def __dir__(self):
-        return self.__dict__.keys() + list(self.fields) + self.relationships.keys()
+        fields_dict = dict()
+        for field in self.fields: 
+            fields_dict[field] = field
+        d1 = dict(self.__dict__, **fields_dict, **self.relationships) 
+        return d1.keys() 
 
     @property
     def identifier(self):

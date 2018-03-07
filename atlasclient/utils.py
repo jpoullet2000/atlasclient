@@ -11,6 +11,7 @@
 #    under the License.
 
 import re
+import base64
 
 try:
     from logging import NullHandler  # pylint: disable=unused-import
@@ -77,6 +78,14 @@ def version_str(version):
     else:
         raise ValueError("Invalid version: %s" % version)
 
+def generate_http_basic_token(username, password):
+    """
+    Generates a HTTP basic token from username and password
+
+    Returns a token string (not a byte)
+    """
+    token = base64.b64encode('{}:{}'.format(username, password).encode('utf-8')).decode('utf-8')
+    return token
 
 def generate_base_url(host, protocol=None, port=None):
     matches = re.match(r'^(([^:]+)://)?([^/:]+)(:([^/]+))?', host)

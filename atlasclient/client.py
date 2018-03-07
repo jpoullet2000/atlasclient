@@ -77,7 +77,8 @@ class Atlas(object):
         self._version = None
 
     def __dir__(self):
-        return self.__dict__.keys() + ENTRY_POINTS.keys()
+        d1 = dict(self.__dict__, **ENTRY_POINTS)
+        return d1.keys()
 
     def check_version(self):
         if self.version < base.OLDEST_SUPPORTED_VERSION:
@@ -112,10 +113,11 @@ class HttpClient(object):
     """
     def __init__(self, host, username, password, identifier, validate_ssl=True,
                  timeout=10, max_retries=5):
-
+        basic_token = utils.generate_http_basic_token(username=username, password=password)
         self.request_params = {
-            'headers': {'X-Requested-By': identifier},
-            'auth': (username, password),
+            'headers': {'X-Requested-By': identifier,
+                        'Authorization': 'Basic {}'.format(basic_token)},
+            #'auth': (username, password),
             'verify': validate_ssl,
             'timeout': timeout,
         }

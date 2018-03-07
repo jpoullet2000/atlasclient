@@ -102,16 +102,6 @@ class TestEntityREST():
         atlas_client.entity_post.create(data=entity_guid_response)
         atlas_client.entity_post.client.post.assert_called_with(atlas_client.entity_post.url, data=entity_guid_response)
 
-#        for e in entity_collection:
-#            assert e._data == entity_guid_response
-#            mocker.patch.object(e.client, 'post')
-#            e.client.post.return_value = entity_guid_response 
-#            e.create()
-#            e.client.post.assert_called_with(e._href, data=e._data)
-#            with pytest.raises(exceptions.MethodNotImplemented) as err:
-#                e.update()
-#            with pytest.raises(exceptions.MethodNotImplemented) as err:
-#                e.delete()
 
     def test_entity_bulk_get(self, mocker, atlas_client, entity_bulk_response):
         mocker.patch.object(atlas_client.client, 'get')
@@ -206,12 +196,6 @@ class TestEntityREST():
                                                                   data=[{'typeName': 'Confidential'}, {'typeName': None}])
         
          
-#    def test_delete_entity_guid_classification(self, mocker, entity_guid_response, entity_guid):
-#        mocker.patch.object(entity_guid.classifications('classtype1').client, 'delete')
-#        entity_guid.classifications('classtype1').client.delete.return_value = {}
-#        entity_guid.classifications('classtype1').delete()
-#        entity_guid.client.delete.assert_called_with(entity_guid.classifications('classtype1')._href)
-
 class TestTypeDefs():
     def test_typedefs_get(self, mocker, atlas_client, typedefs_response):
         mocker.patch.object(atlas_client.client, 'request')
