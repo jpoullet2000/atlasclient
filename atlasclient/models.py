@@ -483,6 +483,10 @@ class TypeDefs(base.QueryableModelCollection):
         self.client.put(self.url, data=data)
         return self
 
+    @events.evented
+    def delete(self, data, **kwargs):
+        self.client.delete(self.url, data=data)
+        return self
 
 class TypeDef(base.QueryableModel):
     collection_class = TypeDefs
