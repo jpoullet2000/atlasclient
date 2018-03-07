@@ -334,19 +334,70 @@ Idem for entityDefs and structDefs.
 Delete typeDefs
 ~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To delete typedefs::
 
+    client.typedefs.delete(data=typedef_dict)
+
+Where `typedef_dict` is the body to pass. 
+Here is an example as illustration::
+
+   typedef_dict = {
+   "enumDefs":[],
+   "structDefs":[],
+   "classificationDefs":[],
+   "entityDefs":[
+      {
+         "superTypes":[
+           "DataSet"
+         ],
+         "name":"test_entity_7",
+         "description":"test_entity_7",
+         "createdBy": "admin",
+         "updatedBy": "admin",
+         "attributeDefs":[
+            {
+               "name":"test_7_1",
+               "isOptional": True,
+               "isUnique": False,
+               "isIndexable": False,
+               "typeName":"string",
+               "valuesMaxCount":1,
+               "cardinality":"SINGLE",
+               "valuesMinCount":0
+            },
+           {
+               "name":"test_7_2",
+               "isOptional": True,
+               "isUnique": False,
+               "isIndexable": False,
+               "typeName":"string",
+               "valuesMaxCount":1,
+               "cardinality":"SINGLE",
+               "valuesMinCount":0
+            }
+         ]
+         
+      }
+   ]
+   } 
 
 Create typeDefs
 ~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To create typedefs::
 
+    client.typedefs.create(data=typedef_dict)
+
+An example for `typedef_dict` is given at the subsection above. 
 
 Update typeDefs
 ~~~~~~~~~~~~~~~
 
-TO BE DONE...
+To update typedefs::
+
+    client.typedefs.update(data=typedef_dict)
+
+An example for `typedef_dict` is given at the subsection above. 
 
 
 Get typeDefs headers
