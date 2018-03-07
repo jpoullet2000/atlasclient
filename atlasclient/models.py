@@ -473,6 +473,16 @@ class TypeDefs(base.QueryableModelCollection):
         model.load(response)
         self._models.append(model)
 
+    @events.evented
+    def create(self, data, **kwargs):
+        self.client.post(self.url, data=data)
+        return self
+
+    @events.evented
+    def update(self, data, **kwargs):
+        self.client.put(self.url, data=data)
+        return self
+
 
 class TypeDef(base.QueryableModel):
     collection_class = TypeDefs
