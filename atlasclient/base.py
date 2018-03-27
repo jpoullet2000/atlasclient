@@ -17,9 +17,10 @@ Defines all the base classes for response objects.
 from datetime import datetime, timedelta
 import json
 import logging
-import six
 import time
 import ast
+
+import six
 
 from atlasclient import events, exceptions, utils
 
@@ -144,7 +145,7 @@ class ModelCollection(object):
     def __next__(self):
         return self.next()
 
-    def __call__(self, *args):
+    def __call__(self, *args, **kwargs):
         raise NotImplementedError("'__call__' must be defined by subclasses")
 
     def inflate(self):
@@ -195,7 +196,7 @@ class QueryableModelCollection(ModelCollection):
         else:
             items = args
 
-        if len(items) > 0:
+        if items:
             self._models = []
             self._is_inflated = True
             for item in items:
@@ -253,8 +254,8 @@ class QueryableModelCollection(ModelCollection):
     def load(self, response):
         """Parse the GET response for the collection.
 
-        This operates as a lazy-loader, meaning that the data are only downloaded 
-        from the server if there are not already loaded. 
+        This operates as a lazy-loader, meaning that the data are only downloaded
+        from the server if there are not already loaded.
         Collection items are loaded sequentially.
 
         In some rare cases, a collection can have an asynchronous request
@@ -406,12 +407,12 @@ class Model(object):
 
     def __dir__(self):
         fields_dict = dict()
-        for field in self.fields: 
+        for field in self.fields:
             fields_dict[field] = field
         d1 = {}
         for item in [self.__dict__, fields_dict, self.relationships]:
             d1.update(item)
-        return d1.keys() 
+        return d1.keys()
 
     @property
     def identifier(self):
@@ -599,8 +600,8 @@ class QueryableModel(Model):
         if self.data_key:
             data = {self.data_key: {}}
             if len(kwargs) == 0:
-                    data = self._data
-                    return data
+                data = self._data
+                return data
             for field in kwargs:
                 if field in self.fields:
                     data[self.data_key][field] = kwargs[field]

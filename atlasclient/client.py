@@ -52,7 +52,7 @@ ENTRY_POINTS = {'entity_guid': models.EntityGuid,
                 'search_fulltext': models.SearchFulltext,
                 'relationship': models.Relationship,
                 'relationship_guid': models.RelationshipGuid,
-                }
+               }
 
 
 class Atlas(object):
@@ -137,7 +137,7 @@ class HttpClient(object):
         if content_type is not None:
             params['headers']['Content-type'] = content_type
         else:
-            params['headers']['Content-type'] = 'application/json' 
+            params['headers']['Content-type'] = 'application/json'
         LOG.debug("Request headers: %s", params['headers'])
 
         if 'data' in params and isinstance(params['data'], dict):
@@ -163,7 +163,7 @@ class HttpClient(object):
 
         # there is no consistent way to determine response type
         # so assume json if it's not an empty string
-        if len(response.text) > 0:
+        if response.text:
             if response.headers.get('content-type') == 'application/x-ustar':
                 tarstream = io.BytesIO(response.content)
                 tarstream.seek(0)

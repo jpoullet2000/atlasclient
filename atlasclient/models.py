@@ -16,12 +16,10 @@ Defines all the model classes for the various parts of the API.
 
 import logging
 import json
-import os
-import time
 import six
 
 from atlasclient import base, exceptions, events
-from atlasclient.utils import normalize_underscore_case, NullHandler
+from atlasclient.utils import NullHandler
 
 LOG = logging.getLogger(__name__)
 LOG.addHandler(NullHandler())
@@ -38,7 +36,7 @@ class EntityCollection(base.DependentModelCollection):
             model = self.model_class(self, data=entity)
             self._models.append(model)
         self._iter_marker = 0
-    
+ 
     def __call__(self, *args):
         self._is_inflated = True
         self._models = []
@@ -83,7 +81,9 @@ class EntityPost(base.QueryableModel):
     collection_class = EntityPostCollection
     path = 'entity'
     data_key = 'entity_post'
-    fields = ('entity', 'referredEntities')
+    fields = ('entity', 'referredEntities', 
+              'mutatedEntities', 'guidAssignments', 'createdEntities', 'updatedEntities', 'partialUpdatedEntities', 'deletedEntities',
+              'firstEntityUpdated', 'firstEntityPartialUpdated')
 
     @events.evented
     def delete(self, **kwargs):
@@ -122,23 +122,6 @@ class Classification(base.QueryableModel):
     data_key = 'classifications'
     fields = ('sortType', 'list', 'totalCount', 'startIndex', 'pageSize')
     relationships = {'list': ClassificationItem}
-    #primary_key = 'typeName'
-    #fields = ('typeName', 'attributes')
-
-#    def _generate_input_dict(self, **kwargs):
-#        if self.data_key:
-#            data = {self.data_key: {}}
-#            for field in kwargs:
-#                if field in self.fields:
-#                    data[self.data_key][field] = kwargs[field]
-#                else:
-#                    data[field] = kwargs[field]
-#            for field in self.fields:
-#                if hasattr(self, field) and field not in data[self.data_key].keys():
-#                    data[self.data_key][field] = getattr(self, field)
-#            return data
-#        else:
-#            return kwargs
 
     @events.evented
     def create(self, **kwargs):
@@ -156,8 +139,8 @@ class Classification(base.QueryableModel):
 
     @events.evented
     def update(self, **kwargs):
-        """Update a resource by passing in modifications via keyword arguments.
-
+        """
+        Update a resource by passing in modifications via keyword arguments.
         """
         data = self._generate_input_dict(**kwargs)
         self.load(self.client.put('/'.join(self.url.split('/')[:-1]) + 's', data=data))
@@ -187,11 +170,11 @@ class EntityGuidClassificationCollection(base.QueryableModelCollection):
 
         """
         data = []
-        for c in self:
-            for classification_item in c.list:
+        for cl in self:
+            for classification_item in cl.list:
                 class_item_dict = dict()
                 for field in classification_item.fields:
-                        class_item_dict[field] = getattr(classification_item, field)
+                    class_item_dict[field] = getattr(classification_item, field)
                 data.append(class_item_dict)
         self.load(self.client.put(self.url, data=data))
         return self
@@ -217,20 +200,19 @@ class EntityGuid(base.QueryableModel):
     primary_key = 'guid'
     fields = ('entity', 'referredEntities')
     relationships = {'classifications': EntityGuidClassification,
-                     }
+                    }
 
     def _generate_input_dict(self, **kwargs):
         return self._data
 
-    
     def update(self, attribute):
         if attribute not in self.entity['attributes']:
-                raise exceptions.BadRequest(method=self.update, 
-                                            details='The attribute {} does not exist for {}'.format(attribute,
-                                                                                                    self.entity['typeName'])) 
+            raise exceptions.BadRequest(method=self.update,
+                                        details='The attribute {} does not exist for {}'.format(attribute,
+                                                                                                self.entity['typeName']))
         self.load(self.client.put(self.url + '?name={}'.format(attribute),
                                   data=self.entity['attributes'][attribute]))
-        return(self._data)
+        return self._data
 
 
 class EntityUniqueAttributeCollection(base.QueryableModelCollection):
@@ -274,16 +256,16 @@ class EntityBulkCollection(base.QueryableModelCollection):
         self._models.append(model)
 
     def create(self, data, **kwargs):
-        """ 
+        """
         Create classifitions for specific entity
         """
         self.client.post(self.url, data=data)
     
     def delete(self, guid):
-         """
-         Delete guid 
-         """
-         self.client.delete(self.url, params={'guid': guid})
+        """
+        Delete guid
+        """
+        self.client.delete(self.url, params={'guid': guid})
 
 
 class EntityBulk(base.QueryableModel):
@@ -317,10 +299,10 @@ class EntityBulkClassification(base.QueryableModel):
     fields = ('classification', 'entityGuids')
 
     def _generate_input_dict(self, **kwargs):
-        return(kwargs)
+        return kwargs
 
     def create(self, data, **kwargs):
-        """ 
+        """
         Create classifitions for specific entity
         """
         self.client.post(self.url, data=data)
@@ -367,7 +349,7 @@ class AttributeDef(base.DependentModel):
               'valuesMaxCount', 'isUnique',
               'isIndexable', 'defaultValue',
               'constraints'
-              )
+             )
     relationships = {'constraints': Constraint}
 
 
@@ -392,8 +374,8 @@ class ElementDefCollection(base.DependentModelCollection):
         self.parent = parent
         self._is_inflated = False
         self._models = []
-        for elementDef in self.parent._data['elementDefs']:
-            model = self.model_class(self, data=elementDef)
+        for element_def in self.parent._data['elementDefs']:
+            model = self.model_class(self, data=element_def)
             self._models.append(model)
         self._iter_marker = 0
 
@@ -434,7 +416,7 @@ class ClassificationDef(base.DependentModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class EntityDefCollection(base.DependentModelCollection):
@@ -452,7 +434,7 @@ class EntityDef(base.DependentModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class TypeDefHeaderCollection(base.QueryableModelCollection):
@@ -498,7 +480,7 @@ class TypeDef(base.QueryableModel):
                      'enumDefs': EnumDef,
                      'classificationDefs': ClassificationDef,
                      'entityDefs': EntityDef,
-                     }
+                    }
 
     def load(self, response):
         self._data.update(response)
@@ -524,7 +506,7 @@ class ClassificationDefGuid(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class ClassificationDefName(base.QueryableModel):
@@ -538,7 +520,7 @@ class ClassificationDefName(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class EntityDefGuid(base.QueryableModel):
@@ -552,7 +534,7 @@ class EntityDefGuid(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class EntityDefName(base.QueryableModel):
@@ -566,7 +548,7 @@ class EntityDefName(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class EnumDefGuid(base.QueryableModel):
@@ -604,7 +586,7 @@ class RelationshipDefGuid(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class RelationshipDefName(base.QueryableModel):
@@ -622,7 +604,7 @@ class RelationshipDefName(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class StructDefGuid(base.QueryableModel):
@@ -636,7 +618,7 @@ class StructDefGuid(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class StructDefName(base.QueryableModel):
@@ -650,7 +632,7 @@ class StructDefName(base.QueryableModel):
               'version', 'name', 'description', 'typeVersion',
               'options')
     relationships = {'attributeDefs': AttributeDef,
-                     }
+                    }
 
 
 class TypeDefGuid(base.QueryableModel):
@@ -682,7 +664,7 @@ class LineageGuidRelation(base.DependentModel):
     data_key = 'lineage_guid_relations'
     fields = ('fromEntityId',
               'toEntityId',
-              )
+             )
 
 
 class LineageGuidCollection(base.QueryableModelCollection):
@@ -691,8 +673,8 @@ class LineageGuidCollection(base.QueryableModelCollection):
             identifier = str(args[0])
 
         if kwargs is None:
-                raise exceptions.BadRequest(details='An attribute should be given (e.g. qualifiedName="/my/hdfs/path")')
-        
+            raise exceptions.BadRequest(details='An attribute should be given (e.g. qualifiedName="/my/hdfs/path")')
+ 
         self._is_inflated = False
         self._filter = {}
         self._models = []
@@ -707,7 +689,7 @@ class LineageGuidCollection(base.QueryableModelCollection):
                 self._filter[key] = value
             filter_list = ['{}={}'.format(k, v) for k, v in self._filter.items()]
             url_path_filter = '?' + '&'.join(filter_list)
-        return self.model_class(self, href='/'.join([self.url, identifier]) + url_path_filter, 
+        return self.model_class(self, href='/'.join([self.url, identifier]) + url_path_filter,
                                 data={self.model_class.primary_key: identifier})
     
 

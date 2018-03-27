@@ -98,7 +98,7 @@ class TestEntityREST():
         mocker.patch.object(atlas_client.client, 'get')
         atlas_client.client.get.return_value = entity_guid_response
         mocker.patch.object(atlas_client.entity_post.client, 'post')
-        atlas_client.client.post.return_value = entity_guid_response
+        atlas_client.entity_post.client.post.return_value = entity_post_response
         atlas_client.entity_post.create(data=entity_guid_response)
         atlas_client.entity_post.client.post.assert_called_with(atlas_client.entity_post.url, data=entity_guid_response)
 
