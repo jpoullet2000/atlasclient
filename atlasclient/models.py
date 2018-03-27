@@ -70,7 +70,7 @@ class EntityPostCollection(base.QueryableModelCollection):
         """
         Update a resource by passing in modifications via keyword arguments.
         """
-        self.client.post(self.url, data=data)
+        return self.client.post(self.url, data=data)
 
 
 class EntityPost(base.QueryableModel):
@@ -183,7 +183,7 @@ class EntityGuidClassificationCollection(base.QueryableModelCollection):
         """ 
         Create classifitions for specific entity
         """
-        self.client.post(self.url, data=data)
+        return self.client.post(self.url, data=data)
 
 
 class EntityGuidClassification(base.QueryableModel):
@@ -265,7 +265,7 @@ class EntityBulkCollection(base.QueryableModelCollection):
         """
         Delete guid
         """
-        self.client.delete(self.url, params={'guid': guid})
+        return self.client.delete(self.url, params={'guid': guid})
 
 
 class EntityBulk(base.QueryableModel):
