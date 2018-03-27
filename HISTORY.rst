@@ -3,6 +3,12 @@ History
 =======
 
 
+0.1.2 (2018-03-27)
+------------------
+
+* Bug fixes
+* Response is returned after entity creation (easier to figure out the guid)
+
 0.1.1 (2018-03-07)
 ------------------
 
