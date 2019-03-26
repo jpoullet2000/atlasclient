@@ -48,7 +48,7 @@ class EntityCollection(base.DependentModelCollection):
 
 class Entity(base.DependentModel):
     collection_class = EntityCollection
-    fields = ('guid', 'status', 'displayText', 'classificationNames', 'typeName', 'attributes', 'createdBy', 'updatedBy', 'createTime', 'updateTime', 'version',)
+    fields = ('guid', 'status', 'displayText', 'classificationNames', 'typeName', 'attributes', 'createdBy', 'updatedBy', 'createTime', 'updateTime', 'version', 'relationshipAttributes', )
 
 
 class EntityPostCollection(base.QueryableModelCollection):
