@@ -419,17 +419,19 @@ class TestDiscoveryREST():
             atlas_client.search_attribute.client.get.assert_called_with(s.url, params=params)
         for s in search_results:
             for e in s.entities:
-                    assert e.attributes['property1'] == {}
+                assert e.attributes['property1'] == {}
 
     def test_search_basic_get(self, mocker, atlas_client, search_attribute_response):
         mocker.patch.object(atlas_client.search_basic.client, 'get')
         search_attribute_response['queryType'] = 'BASIC'
-        atlas_client.search_basic.client.get.return_value =  search_attribute_response 
+        atlas_client.search_basic.client.get.return_value = search_attribute_response
         params = {'classification': 'class', 'excludedDeletedEntities': 'True', 'limit': '1'}
         search_results = atlas_client.search_basic(**params) 
         for s in search_results:
             assert s.queryType == 'BASIC'
             atlas_client.search_basic.client.get.assert_called_with(s.url, params=params)
+            for e in s.entities:
+                assert e.attributes['property1'] == {}
 
     def test_search_basic_post(self, mocker, atlas_client, search_attribute_response):
         mocker.patch.object(atlas_client.search_basic.client, 'get')
