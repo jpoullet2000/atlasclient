@@ -2,6 +2,11 @@
 History
 =======
 
+0.1.3 ()
+------------------
+* HTTP Auth
+* Basic search inflate
+* relationshipAttributes
 
 0.1.2 (2018-03-27)
 ------------------
