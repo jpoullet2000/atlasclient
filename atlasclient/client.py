@@ -63,7 +63,7 @@ class Atlas(object):
     """
     def __init__(self, host, port=None, username=None, password=None,
                  identifier=None, protocol=None, validate_ssl=True,
-                 timeout=10, max_retries=5):
+                 timeout=10, max_retries=5, auth=None):
 
         self.base_url = utils.generate_base_url(host, port=port, protocol=protocol)
 
@@ -73,7 +73,7 @@ class Atlas(object):
         self.client = HttpClient(host=self.base_url, username=username,
                                  password=password, identifier=identifier,
                                  validate_ssl=validate_ssl, timeout=timeout,
-                                 max_retries=max_retries)
+                                 max_retries=max_retries, auth=auth)
         self._version = None
 
     def __dir__(self):
@@ -114,7 +114,7 @@ class HttpClient(object):
     cases do exist either due to Atlas bugs or other mitigating circumstances.
     """
     def __init__(self, host, username, password, identifier, validate_ssl=True,
-                 timeout=10, max_retries=5):
+                 timeout=10, max_retries=5, auth=None):
         basic_token = utils.generate_http_basic_token(username=username, password=password)
         self.request_params = {
             'headers': {'X-Requested-By': identifier,
@@ -125,6 +125,7 @@ class HttpClient(object):
         }
         # automatically retry requests on connection errors
         self.session = requests.Session()
+        self.session.auth = auth
         adapter = requests.adapters.HTTPAdapter(max_retries=max_retries)
         self.session.mount(host, adapter)
 
