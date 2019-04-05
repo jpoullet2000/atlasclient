@@ -2,7 +2,7 @@
 History
 =======
 
-0.1.3 ()
+0.1.3 (2019-04-05)
 ------------------
 * HTTP Auth
 * Basic search inflate
