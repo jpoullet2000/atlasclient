@@ -54,7 +54,7 @@ Search by attribute
 
 To search for entities with a special attribute name::
 
-    params = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit': '10'} 
+    params = {'typeName': 'DataSet', 'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit': '10'}
     search_results = client.search_attribute(**params) 
     #  Info about all entities in one dict
     for s in search_results:
@@ -209,7 +209,7 @@ Delete a classification by GUID
 
 To delete a given classification from an existing entity represented by a GUID::
 
-    client.entity_guid(GUID).classications('Confidential').delete()
+    client.entity_guid(GUID).classifications('Confidential').delete()
 
 This will delete the classification 'Confidential' for that specific entity only.
  
@@ -312,19 +312,19 @@ Get typeDefs
 
 Typedefs can be seen as a collection of type definitions in Atlas and can accessed with::
 
-    client.typeDefs
+    client.typedefs
 
 This only creates an object is not actually requesting the Atlas server. 
 Suppose we want to access all elements of type 'enumDefs':: 
 
-    for t in client.typeDefs:
+    for t in client.typedefs:
         for e in t.enumDefs:
             for el in e.elementDefs:
                 print(el.value)
 
 We can access the classification types in a similar way::
 
-    for t in client.typeDefs:
+    for t in client.typedefs:
         for classification_type in t.classificationDefs:
             print(classification_type.description)
 

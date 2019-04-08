@@ -32,8 +32,8 @@ Get started
 
     >>> from atlasclient.client import Atlas
     >>> client = Atlas('<atlas.host>', port=21000, username='admin', password='admin')
-    >>> client.entityguid(<guid>).status
-    >>> params = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit':'10'} 
+    >>> client.entity_guid(<guid>).status
+    >>> params = {'typeName': 'DataSet', 'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit':'10'}
     >>> search_results = client.search_attribute(**params) 
     >>> for s in search_results:
     ...    for e in s.entities:
