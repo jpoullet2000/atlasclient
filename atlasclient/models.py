@@ -815,6 +815,7 @@ class SearchAttribute(base.QueryableModel):
             self._is_inflating = False
         return self
 
+
 class SearchBasicCollection(base.QueryableModelCollection):
     def load(self, response):
         model = self.model_class(self, href=self.url)
@@ -869,6 +870,23 @@ class SearchDsl(base.QueryableModel):
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
 
+    def inflate(self):
+        """Load the resource from the server, if not already loaded."""
+        if not self._is_inflated:
+            if self._is_inflating:
+                # catch infinite recursion when attempting to inflate
+                # an object that doesn't have enough data to inflate
+                msg = ("There is not enough data to inflate this object.  "
+                       "Need either an href: {} or a {}: {}")
+                msg = msg.format(self._href, self.primary_key, self._data.get(self.primary_key))
+                raise exceptions.ClientError(msg)
+
+            self._is_inflating = True
+            self.load(self._data)
+            self._is_inflated = True
+            self._is_inflating = False
+        return self
+
 
 class SearchFulltextCollection(base.QueryableModelCollection):
     def load(self, response):
@@ -886,3 +904,20 @@ class SearchFulltext(base.QueryableModel):
     relationships = {'entities': Entity,
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
+
+    def inflate(self):
+        """Load the resource from the server, if not already loaded."""
+        if not self._is_inflated:
+            if self._is_inflating:
+                # catch infinite recursion when attempting to inflate
+                # an object that doesn't have enough data to inflate
+                msg = ("There is not enough data to inflate this object.  "
+                       "Need either an href: {} or a {}: {}")
+                msg = msg.format(self._href, self.primary_key, self._data.get(self.primary_key))
+                raise exceptions.ClientError(msg)
+
+            self._is_inflating = True
+            self.load(self._data)
+            self._is_inflated = True
+            self._is_inflating = False
+        return self
