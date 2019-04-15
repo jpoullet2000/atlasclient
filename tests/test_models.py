@@ -454,6 +454,8 @@ class TestDiscoveryREST():
         for s in search_results:
             assert s.queryType == 'DSL'
             atlas_client.search_dsl.client.get.assert_called_with(s.url, params=params)
+            for e in s.entities:
+                assert e.attributes['property1'] == {}
 
     def test_search_fulltext_get(self, mocker, atlas_client, search_attribute_response):
         mocker.patch.object(atlas_client.search_fulltext.client, 'get')
@@ -464,3 +466,5 @@ class TestDiscoveryREST():
         for s in search_results:
             assert s.queryType == 'ATTRIBUTE'
             atlas_client.search_fulltext.client.get.assert_called_with(s.url, params=params)
+            for e in s.entities:
+                assert e.attributes['property1'] == {}
