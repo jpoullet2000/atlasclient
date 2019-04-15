@@ -593,7 +593,8 @@ class QueryableModel(Model):
             self._is_inflating = True
 
             try:
-                self.load(self.client.get(self.url))
+                params = self.searchParameters if hasattr(self, 'searchParameters') else {}
+                self.load(self.client.get(self.url, params=params))
             except Exception:
                 self.load(self._data)
 
