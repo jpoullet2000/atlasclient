@@ -591,7 +591,12 @@ class QueryableModel(Model):
                 raise exceptions.ClientError(msg)
 
             self._is_inflating = True
-            self.load(self.client.get(self.url))
+
+            try:
+                self.load(self.client.get(self.url))
+            except Exception:
+                self.load(self._data)
+
             self._is_inflated = True
             self._is_inflating = False
         return self
