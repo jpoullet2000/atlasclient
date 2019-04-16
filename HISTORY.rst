@@ -2,6 +2,10 @@
 History
 =======
 
+0.1.4 (2019-04-16)
+------------------
+* fixes (BasicSearch, when no result in _data, etc) 
+
 0.1.3 (2019-04-05)
 ------------------
 * HTTP Auth
