@@ -32,7 +32,7 @@ class EntityCollection(base.DependentModelCollection):
         self.parent = parent
         self._is_inflated = True
         self._models = []
-        for entity in self.parent._data['entities']:
+        for entity in self.parent._data.get('entities') or []:
             model = self.model_class(self, data=entity)
             self._models.append(model)
         self._iter_marker = 0
@@ -40,7 +40,7 @@ class EntityCollection(base.DependentModelCollection):
     def __call__(self, *args):
         self._is_inflated = True
         self._models = []
-        for entity in self.parent._data['entities']:
+        for entity in self.parent._data.get('entities') or []:
             model = self.model_class(self, data=entity)
             self._models.append(model)
         return self
@@ -107,7 +107,7 @@ class ClassificationItemCollection(base.DependentModelCollection):
         self.parent = parent
         self._is_inflated = False
         self._models = []
-        for classification_item in self.parent._data['list']:
+        for classification_item in self.parent._data.get('list') or []:
             model = self.model_class(self, data=classification_item)
             self._models.append(model)
         self._iter_marker = 0
@@ -299,7 +299,7 @@ class ConstraintCollection(base.DependentModelCollection):
         self.parent = parent
         self._is_inflated = False
         self._models = []
-        for constraint in self.parent._data['constraints']:
+        for constraint in self.parent._data.get('constraints') or []:
             model = self.model_class(self, data=constraint)
             self._models.append(model)
         self._iter_marker = 0
@@ -318,7 +318,7 @@ class AttributeDefCollection(base.DependentModelCollection):
         self.parent = parent
         self._is_inflated = False
         self._models = []
-        for attributeDef in self.parent._data['attributeDefs']:
+        for attributeDef in self.parent._data.get('attributeDefs') or []:
             model = self.model_class(self, data=attributeDef)
             self._models.append(model)
         self._iter_marker = 0
@@ -358,7 +358,7 @@ class ElementDefCollection(base.DependentModelCollection):
         self.parent = parent
         self._is_inflated = False
         self._models = []
-        for element_def in self.parent._data['elementDefs']:
+        for element_def in self.parent._data.get('elementDefs') or []:
             model = self.model_class(self, data=element_def)
             self._models.append(model)
         self._iter_marker = 0
