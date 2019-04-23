@@ -65,6 +65,7 @@ To search for entities with a special attribute name::
             print(e.name)
             print(e.guid)
 
+
 Search with basic terms
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -76,9 +77,7 @@ To retrieve data for the specified full text query::
         for e in s.entities
             print(e.guid)
 
-
-Attribute based search for entities satisfying the search parameters::
-`(POST) /v2/search/basic`
+Attribute based search `(POST /v2/search/basic)` for entities satisfying the search parameters::
 
     data = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit': '10'}
     search_results = client.search_basic.create(data=data)
