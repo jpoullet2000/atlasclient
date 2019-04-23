@@ -800,6 +800,16 @@ class SearchBasic(base.QueryableModel):
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
 
+    @events.evented
+    def create(self, data, **kwargs):
+        """
+        Attribute based search for entities satisfying the search parameters.
+        (POST) /v2/search/basic
+        Please note that this DOES NOT create any entity.
+        """
+        self.load(self.client.post(self.url, data=data))
+        return self
+
 
 class SearchDslCollection(base.QueryableModelCollection):
     def load(self, response):
