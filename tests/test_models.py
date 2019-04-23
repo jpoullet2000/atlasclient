@@ -438,11 +438,11 @@ class TestDiscoveryREST():
         search_attribute_response['queryType'] = 'BASIC'
         atlas_client.search_basic.client.get.return_value =  search_attribute_response 
         mocker.patch.object(atlas_client.search_basic.client, 'post')
-        atlas_client.search_basic.client.post.return_value =  search_attribute_response 
-        search_results = atlas_client.search_basic 
+        atlas_client.search_basic.client.post.return_value =  search_attribute_response
+        search_results = atlas_client.search_basic
         for s in search_results:
             assert s.queryType == 'BASIC'
-            s.create()
+            s.create(data=s._data)
             atlas_client.search_basic.client.post.assert_called_with(s.url, data=s._data)
 
     def test_search_dsl_get(self, mocker, atlas_client, search_attribute_response):
