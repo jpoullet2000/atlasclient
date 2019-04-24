@@ -77,6 +77,13 @@ To retrieve data for the specified full text query::
         for e in s.entities
             print(e.guid)
 
+Attribute based search `(POST /v2/search/basic)` for entities satisfying the search parameters::
+
+    data = {'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit': '10'}
+    search_results = client.search_basic.create(data=data)
+    for e in search_results.entities:
+        print(e.guid)
+
 
 Search by DSL
 ~~~~~~~~~~~~~
