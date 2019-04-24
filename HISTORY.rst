@@ -2,6 +2,11 @@
 History
 =======
 
+0.1.5 (2019-04-24)
+------------------
+* Add support for Post type Basic Search (#76) 
+
+
 0.1.4 (2019-04-16)
 ------------------
 * fixes (BasicSearch, when no result in _data, etc) 
