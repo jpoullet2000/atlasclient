@@ -436,7 +436,7 @@ class Model(object):
             rel_class = self.relationships[attr]
             # we can't lazy-load DependentModel types
             if issubclass(rel_class, DependentModel):
-                self.inflate()
+                rel_class(parent=self).inflate()
 
             if attr not in self._relationship_cache:
                 self._relationship_cache[attr] = rel_class.collection_class(
@@ -551,6 +551,7 @@ class QueryableModel(Model):
     path = None
     data_key = None
     relationships = {}
+    method = "get"      # To keep track of the method type of each request
 
     def __init__(self, *args, **kwargs):
         self.request = None
@@ -594,7 +595,8 @@ class QueryableModel(Model):
 
             try:
                 params = self.searchParameters if hasattr(self, 'searchParameters') else {}
-                self.load(self.client.get(self.url, params=params))
+                # To keep the method same as the original request. The default is GET
+                self.load(self.client.request(self.method, self.url, **params))
             except Exception:
                 self.load(self._data)
 
@@ -653,6 +655,7 @@ class QueryableModel(Model):
         some subclasses the identifier is server-side-generated.  Those classes
         have to overload this method to deal with that scenario.
         """
+        self.method = 'post'
         if self.primary_key in kwargs:
             del kwargs[self.primary_key]
         data = self._generate_input_dict(**kwargs)
@@ -674,6 +677,7 @@ class QueryableModel(Model):
         If the request body doesn't follow that pattern, you'll need to overload
         this method to handle your particular case.
         """
+        self.method = 'put'
         data = self._generate_input_dict(**kwargs)
         self.load(self.client.put(self.url, data=data))
         return self
@@ -681,6 +685,7 @@ class QueryableModel(Model):
     @events.evented
     def delete(self, **kwargs):
         """Delete a resource by issuing a DELETE http request against it."""
+        self.method = 'delete'
         if len(kwargs) > 0:
             self.load(self.client.delete(self.url, params=kwargs))
         else:
