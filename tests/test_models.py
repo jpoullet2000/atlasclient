@@ -153,8 +153,8 @@ class TestEntityREST():
         assert entity_guid._data['entity']['status'] == 'ACTIVE'
         
     def test_update_entity_by_guid(self, mocker, entity_guid_response, entity_guid):    
-        mocker.patch.object(entity_guid.client, 'get')
-        entity_guid.client.get.return_value = entity_guid_response
+        mocker.patch.object(entity_guid.client, 'request')
+        entity_guid.client.request.return_value = entity_guid_response
         mocker.patch.object(entity_guid.client, 'put')
         attribute = 'description'
         entity_guid.update(attribute=attribute)
