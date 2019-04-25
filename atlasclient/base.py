@@ -436,7 +436,7 @@ class Model(object):
             rel_class = self.relationships[attr]
             # we can't lazy-load DependentModel types
             if issubclass(rel_class, DependentModel):
-                self.inflate()
+                rel_class(parent=self).inflate()
 
             if attr not in self._relationship_cache:
                 self._relationship_cache[attr] = rel_class.collection_class(
