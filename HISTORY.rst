@@ -2,6 +2,10 @@
 History
 =======
 
+0.1.6 (2019-04-26)
+------------------
+* Call of DependentClass inflate (#79) 
+
 0.1.5 (2019-04-24)
 ------------------
 * Add support for Post type Basic Search (#76) 
