@@ -52,6 +52,7 @@ ENTRY_POINTS = {'entity_guid': models.EntityGuid,
                 'search_fulltext': models.SearchFulltext,
                 'relationship': models.Relationship,
                 'relationship_guid': models.RelationshipGuid,
+                'search_saved': models.SearchSaved
                }
 
 

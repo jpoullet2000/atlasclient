@@ -97,6 +97,72 @@ To retrieve data for the specified DSL::
             print(e.classificationNames)
             print(e.attributes)
 
+SavedSearchREST
+----------
+
+This section explains how to get, create saved search, update or delete them. 
+
+Get all saved search for user
+~~~~~~~~~~~~~
+
+To retrieve saved search for the Atlas user::
+
+    search_saved = client.search_saved()
+    for s in search_saved:
+        print(s._data)
+        print(s.name)
+
+
+Get saved search by name (for user)
+~~~~~~~~~~~~~
+
+To retrieve saved search for the Atlas user by name::
+
+    search_saved = client.search_saved(NAME)
+    print(s.name)
+    print(s.ownerName)
+
+
+Create saved search by name (for user)
+~~~~~~~~~~~~~
+
+To create saved search for the Atlas user by name::
+
+    payload = """{
+    "name": "trying",
+    "ownerName": "svc_data_catalog_api",
+    "searchType": "BASIC",
+    "searchParameters": {
+        "typeName": "rdbms_db",
+        "excludeDeletedEntities": true,
+        "includeClassificationAttributes": false,
+        "includeSubTypes": true,
+        "includeSubClassifications": true,
+        "limit": 0,
+        "offset": 0
+    },
+        "uiParameters": "Select::0,Name::1,Owner::2,Description::3,Type::4,Classifications::5,Term::6,Db::7"
+    }"""
+
+    response = client.search_saved.create(data=json.loads(payload))
+
+
+Update saved search by guid (for user)
+~~~~~~~~~~~~~
+
+To create saved search for the Atlas user by name::
+
+    payload = """{"guid": "fa1f15f0-09fc-403d-8ad7-3bcac379c3f9", "name": "trying2"}"""
+    response = client.search_saved.update(data=json.loads(payload))
+
+
+To delete saved search by guid (for user)
+~~~~~~~~~~~~~
+
+To delete saved search for the Atlas user by guid::
+
+    client.search_saved.delete(guid=GUID)
+
 
 EntityREST
 ----------
