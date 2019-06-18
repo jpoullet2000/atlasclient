@@ -98,6 +98,20 @@ def search_saved_response():
             response = json.load(json_data)
     return(response)
 
+@pytest.fixture(scope='class')
+def search_saved_name_response():
+    with open('{}/search_saved_name_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+
+@pytest.fixture(scope='class')
+def search_saved_guid_response():
+    with open('{}/search_saved_guid_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+
 class TestEntityREST():
     def test_entity_post(self, mocker, atlas_client, entity_guid_response, entity_post_response):
         mocker.patch.object(atlas_client.client, 'get')
@@ -480,3 +494,22 @@ class TestDiscoveryREST():
         search_results = atlas_client.search_saved()
         for s in search_results:
             assert s.name == 'TESTNAME'
+
+    def test_search_saved_name_get(self, mocker, atlas_client, search_saved_name_response):
+        mocker.patch.object(atlas_client.search_saved.client, 'request')
+        atlas_client.search_saved.client.request.return_value = search_saved_name_response
+        result = atlas_client.search_saved('TESTNAME')
+
+        assert result.name == 'TESTNAME'
+
+
+
+    def test_search_saved_guid_delete(self, mocker, atlas_client, search_saved_guid_response):
+        mocker.patch.object(atlas_client.client, 'request')
+        atlas_client.client.request.return_value = search_saved_guid_response
+        response = atlas_client.search_saved('TESTNAME')
+        response.delete(guid=GUID)
+
+
+
+

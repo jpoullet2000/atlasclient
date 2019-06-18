@@ -1,4 +1,4 @@
-[{
+{
   "name" : "TESTNAME",
   "ownerName" : "...",
   "searchParameters" : {
@@ -9,7 +9,7 @@
       "attributeValue" : "...",
       "condition" : "OR",
       "criterion" : [ { }, { } ],
-      "operator" : "LIKE"
+      "operator" : "GT"
     },
     "excludeDeletedEntities" : true,
     "includeClassificationAttributes" : true,
@@ -23,12 +23,12 @@
       "attributeValue" : "...",
       "condition" : "AND",
       "criterion" : [ { }, { } ],
-      "operator" : "ENDS_WITH"
+      "operator" : "GT"
     },
     "termName" : "...",
     "typeName" : "..."
   },
-  "searchType" : "BASIC",
+  "searchType" : "ADVANCED",
   "uiParameters" : "...",
   "guid" : "8bbea92b-d98c-4613-ae6e-1a9d0b4f344b"
-}]
+}
