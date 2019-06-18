@@ -92,6 +92,11 @@ def search_attribute_response():
             response = json.load(json_data)
     return(response)
 
+@pytest.fixture(scope='class')
+def search_saved_response():
+    with open('{}/search_saved_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
 
 class TestEntityREST():
     def test_entity_post(self, mocker, atlas_client, entity_guid_response, entity_post_response):
@@ -468,3 +473,10 @@ class TestDiscoveryREST():
             atlas_client.search_fulltext.client.get.assert_called_with(s.url, params=params)
             for e in s.entities:
                 assert e.attributes['property1'] == {}
+
+    def test_search_saved_get(self, mocker, atlas_client, search_saved_response):
+        mocker.patch.object(atlas_client.search_saved.client, 'get')
+        atlas_client.search_saved.client.get.return_value = search_saved_response
+        search_results = atlas_client.search_saved()
+        for s in search_results:
+            assert s.name == 'TESTNAME'
