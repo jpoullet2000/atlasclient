@@ -1,0 +1,34 @@
+[{
+  "name" : "TESTNAME",
+  "ownerName" : "...",
+  "searchParameters" : {
+    "attributes" : [ "...", "..." ],
+    "classification" : "...",
+    "entityFilters" : {
+      "attributeName" : "...",
+      "attributeValue" : "...",
+      "condition" : "OR",
+      "criterion" : [ { }, { } ],
+      "operator" : "LIKE"
+    },
+    "excludeDeletedEntities" : true,
+    "includeClassificationAttributes" : true,
+    "includeSubClassifications" : true,
+    "includeSubTypes" : true,
+    "limit" : 12345,
+    "offset" : 12345,
+    "query" : "...",
+    "tagFilters" : {
+      "attributeName" : "...",
+      "attributeValue" : "...",
+      "condition" : "AND",
+      "criterion" : [ { }, { } ],
+      "operator" : "ENDS_WITH"
+    },
+    "termName" : "...",
+    "typeName" : "..."
+  },
+  "searchType" : "BASIC",
+  "uiParameters" : "...",
+  "guid" : "8bbea92b-d98c-4613-ae6e-1a9d0b4f344b"
+}]

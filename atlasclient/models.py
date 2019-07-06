@@ -846,3 +846,62 @@ class SearchFulltext(base.QueryableModel):
     relationships = {'entities': Entity,
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
+
+
+class SearchSavedCollection(base.QueryableModelCollection):
+    """We can also remove this part but just keeping same structure as above"""
+    def load(self, response):
+        for item in response:
+            model = self.model_class(self,
+                                     href=item.get('href'))
+            model.load(item)
+            self._models.append(model)
+
+
+class SearchSaved(base.QueryableModel):
+    collection_class = SearchSavedCollection
+    path = 'search/saved'
+    data_key = 'search_saved'
+    primary_key = 'guid'
+    fields = ('name', 'searchParameters', 'ownerName', 'searchType', 'uiParameters')
+
+    def inflate(self):
+        """Load the resource from the server, if not already loaded. Removed params check for searchParameters"""
+        if not self._is_inflated:
+            if self._is_inflating:
+                #  catch infinite recursion when attempting to inflate
+                #  an object that doesn't have enough data to inflate
+                msg = ("There is not enough data to inflate this object.  "
+                       "Need either an href: {} or a {}: {}")
+                msg = msg.format(self._href, self.primary_key, self._data.get(self.primary_key))
+                raise exceptions.ClientError(msg)
+
+            self._is_inflating = True
+
+            try:
+                params = {}
+                # To keep the method same as the original request. The default is GET
+                self.load(self.client.request(self.method, self.url, **params))
+            except Exception:
+                self.load(self._data)
+
+            self._is_inflated = True
+            self._is_inflating = False
+        return self
+
+    @events.evented
+    def create(self, data, **kwargs):
+        """This is override method.
+        """
+        self.client.post(self.url, data=data)
+        return self
+
+    @events.evented
+    def update(self, data, **kwargs):
+        """
+        This is override method
+        """
+        self.method = 'put'
+        self.load(self.client.put(self.parent.url, data=data))
+        return self
+

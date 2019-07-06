@@ -92,6 +92,32 @@ def search_attribute_response():
             response = json.load(json_data)
     return(response)
 
+@pytest.fixture(scope='class')
+def search_saved_response():
+    with open('{}/search_saved_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+@pytest.fixture(scope='class')
+def search_saved_name_response():
+    with open('{}/search_saved_name_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+
+@pytest.fixture(scope='class')
+def search_saved_guid_response():
+    with open('{}/search_saved_guid_get.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
+
+@pytest.fixture(scope='class')
+def search_saved_update():
+    with open('{}/search_saved_update.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return(response)
+
 
 class TestEntityREST():
     def test_entity_post(self, mocker, atlas_client, entity_guid_response, entity_post_response):
@@ -468,3 +494,42 @@ class TestDiscoveryREST():
             atlas_client.search_fulltext.client.get.assert_called_with(s.url, params=params)
             for e in s.entities:
                 assert e.attributes['property1'] == {}
+
+    def test_search_saved_get(self, mocker, atlas_client, search_saved_response):
+        mocker.patch.object(atlas_client.search_saved.client, 'get')
+        atlas_client.search_saved.client.get.return_value = search_saved_response
+        search_results = atlas_client.search_saved()
+        for s in search_results:
+            assert s.name == 'TESTNAME'
+
+    def test_search_saved_name_get(self, mocker, atlas_client, search_saved_name_response):
+        mocker.patch.object(atlas_client.search_saved.client, 'request')
+        atlas_client.search_saved.client.request.return_value = search_saved_name_response
+        result = atlas_client.search_saved('TESTNAME')
+
+        assert result.name == 'TESTNAME'
+
+    def test_search_saved_guid_delete(self, mocker, atlas_client, search_saved_guid_response):
+        mocker.patch.object(atlas_client.client, 'request')
+        atlas_client.client.request.return_value = search_saved_guid_response
+        response = atlas_client.search_saved('TESTNAME')
+        response.delete(guid=GUID)
+
+    def test_search_saved_create(self, mocker, atlas_client, search_saved_name_response):
+        mocker.patch.object(atlas_client.search_saved.client, 'post')
+        atlas_client.search_saved.client.post.return_value = search_saved_response
+        atlas_client.search_saved.create(data=search_saved_response)
+
+    def test_search_saved_update(self, mocker, atlas_client, search_saved_guid_response, search_saved_update):
+        mocker.patch.object(atlas_client.search_saved.client, 'request')
+        atlas_client.search_saved.client.request.return_value = search_saved_name_response
+        result = atlas_client.search_saved('TESTNAME')
+
+        mocker.patch.object(atlas_client.search_saved.client, 'put')
+        atlas_client.search_saved.client.put.return_value = search_saved_update
+
+        result.update(data=search_saved_update)
+
+
+
+
