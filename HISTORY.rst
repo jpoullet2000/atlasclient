@@ -2,6 +2,11 @@
 History
 =======
 
+0.1.7 (TBD)
+------------
+* Add support for Atlas' DSL Saved Search (#81)
+* Fixes list lookups for searching
+
 0.1.6 (2019-04-26)
 ------------------
 * Call of DependentClass inflate (#79) 

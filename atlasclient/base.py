@@ -244,7 +244,12 @@ class QueryableModelCollection(ModelCollection):
             self.check_version()
             for k, v in self._filter.items():
                 if '[' in v:
-                    self._filter[k] = ast.literal_eval(v)
+                    try:
+                        self._filter[k] = ast.literal_eval(v)
+                    except SyntaxError:
+                        # In case of DSL Queries, we can specify the list in a query
+                        # but this will try to evaluate this as a list and failed as syntax error.
+                        self._filter[k] = v
             self.load(self.client.get(self.url, params=self._filter))
 
         self._is_inflated = True
