@@ -97,13 +97,20 @@ To retrieve data for the specified DSL::
             print(e.classificationNames)
             print(e.attributes)
 
+
+DSL Search has a helper function available when you specify a SELECT clause or attribute in your search query.
+
+    _search_collection = client.search_dsl(**dsl_param)
+    for collection in _search_collection:
+        attributes = collection.flatten_attrs()
+
 SavedSearchREST
 ----------
 
 This section explains how to get, create saved search, update or delete them. 
 
 Get all saved search for user
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To retrieve saved search for the Atlas user::
 
@@ -114,7 +121,7 @@ To retrieve saved search for the Atlas user::
 
 
 Get saved search by name (for user)
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To retrieve saved search for the Atlas user by name::
 
@@ -124,7 +131,7 @@ To retrieve saved search for the Atlas user by name::
 
 
 Create saved search by name (for user)
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To create saved search for the Atlas user by name::
 
@@ -148,7 +155,7 @@ To create saved search for the Atlas user by name::
 
 
 Update saved search by guid (for user)
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To create saved search for the Atlas user by name::
 
@@ -157,7 +164,7 @@ To create saved search for the Atlas user by name::
 
 
 To delete saved search by guid (for user)
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To delete saved search for the Atlas user by guid::
 
@@ -293,6 +300,22 @@ Get entities by bulk
 To retrieve list of entities identified by its GUIDs::
 
     bulk_collection = client.entity_bulk(guid=[GUID1, GUID2])
+
+
+Get entities by bulk (with relationship attributes)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In some cases, you may want to need the details of relationship attributes along with entity,
+There is a helper function available for that::
+
+    bulk_collection = client.entity_bulk(guid=[GUID1, GUID2])
+    for collection in bulk_collection:
+        entities = collection.entities_with_relationships()
+
+
+    # You can also specify the attributes as a list you want in particular to optimize implementation
+    for collection in bulk_collection:
+        entities = collection.entities_with_relationships(attributes=["database"])
 
 
 Create entities by bulk
