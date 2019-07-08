@@ -3,7 +3,7 @@ History
 =======
 
 0.1.7 (2019-07-08)
-------------
+------------------
 * Add support for Atlas' DSL Saved Search (#81)
 * Fixes list lookups for searching
 
