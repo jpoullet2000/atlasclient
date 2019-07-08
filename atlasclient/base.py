@@ -741,16 +741,20 @@ class QueryableModel(Model):
                     if isinstance(rel_attr, list):
                         for index, item in enumerate(rel_attr):
                             guid = item.guid if hasattr(item, 'guid') else item.get('guid')
-                            if guid in ref_entities:
-                                entity.relationshipAttributes[attribute][index] = ref_entities[guid]
-                            else:
-                                rel_attribute_ids.add(guid)
+                            # A check to be on the safe side / and for test cases
+                            if guid:
+                                if guid in ref_entities:
+                                    entity.relationshipAttributes[attribute][index] = ref_entities[guid]
+                                else:
+                                    rel_attribute_ids.add(guid)
                     if isinstance(rel_attr, dict):
                         guid = rel_attr.get('guid')
-                        if guid in ref_entities:
-                            entity.relationshipAttributes[attribute] = ref_entities[guid]
-                        else:
-                            rel_attribute_ids.add(guid)
+                        # A check to be on the safe side / and for test cases
+                        if guid:
+                            if guid in ref_entities:
+                                entity.relationshipAttributes[attribute] = ref_entities[guid]
+                            else:
+                                rel_attribute_ids.add(guid)
 
             if rel_attribute_ids:
                 _rel_attr_collection = client.entity_bulk(guid=list(rel_attribute_ids))

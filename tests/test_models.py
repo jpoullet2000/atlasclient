@@ -128,7 +128,6 @@ class TestEntityREST():
         atlas_client.entity_post.create(data=entity_guid_response)
         atlas_client.entity_post.client.post.assert_called_with(atlas_client.entity_post.url, data=entity_guid_response)
 
-
     def test_entity_bulk_get(self, mocker, atlas_client, entity_bulk_response):
         mocker.patch.object(atlas_client.client, 'get')
         atlas_client.entity_bulk.client.get.return_value =  entity_bulk_response 
@@ -137,6 +136,16 @@ class TestEntityREST():
         for bulk in bulk_collection:
             atlas_client.entity_bulk.client.get.assert_called_with(bulk_collection.url, params=params)
             for entity in bulk.entities:
+                assert entity.version == 12345
+
+    def test_entity_bulk_get_with_relationships(self, mocker, atlas_client, entity_bulk_response):
+        mocker.patch.object(atlas_client.client, 'get')
+        atlas_client.entity_bulk.client.get.return_value =  entity_bulk_response
+        params = {'guid': [GUID, '92b3a92b-d98c-4613-ae6e-1a9d0b4f344b']}
+        bulk_collection = atlas_client.entity_bulk(**params)
+        for bulk in bulk_collection:
+            atlas_client.entity_bulk.client.get.assert_called_with(bulk_collection.url, params=params)
+            for entity in bulk.entities_with_relationships():
                 assert entity.version == 12345
 
     def test_entity_bulk_delete(self, mocker, atlas_client, entity_bulk_response):
@@ -482,6 +491,7 @@ class TestDiscoveryREST():
             atlas_client.search_dsl.client.get.assert_called_with(s.url, params=params)
             for e in s.entities:
                 assert e.attributes['property1'] == {}
+            assert s.flatten_attrs() == ['12', '34', '56']
 
     def test_search_fulltext_get(self, mocker, atlas_client, search_attribute_response):
         mocker.patch.object(atlas_client.search_fulltext.client, 'get')
