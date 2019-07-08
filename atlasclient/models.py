@@ -13,7 +13,7 @@
 """
 Defines all the model classes for the various parts of the API.
 """
-
+import itertools
 import logging
 import json
 import six
@@ -829,6 +829,15 @@ class SearchDsl(base.QueryableModel):
                      'attributes': AttributeDef,
                      'fullTextResults': FullTextResult}
 
+    def flatten_attrs(self):
+        """
+        If you are specifying attributes using a SELECT clause in DSL search,
+        you can use this function to flatten the attribute values.
+        :return: Python list of attributes values.
+        """
+        attributes = self._data.get('attributes').get("values") or list()
+        return list(itertools.chain.from_iterable(attributes))
+
 
 class SearchFulltextCollection(base.QueryableModelCollection):
     def load(self, response):
@@ -904,4 +913,3 @@ class SearchSaved(base.QueryableModel):
         self.method = 'put'
         self.load(self.client.put(self.parent.url, data=data))
         return self
-

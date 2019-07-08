@@ -121,6 +121,7 @@ class ModelCollection(object):
             entity.version == 12345
 
     """
+
     def __init__(self, client, model_class, parent=None):
         self.client = client
         self.model_class = model_class
@@ -179,6 +180,7 @@ class QueryableModelCollection(ModelCollection):
     This comes in handy because the Atlas API often returns related objects
     when you do a GET call on a specific resource.  So for example:
     """
+
     def __init__(self, *args, **kwargs):
         super(QueryableModelCollection, self).__init__(*args, **kwargs)
         self.request = None
@@ -208,7 +210,8 @@ class QueryableModelCollection(ModelCollection):
                 else:
                     # we only have the primary id, so create an deflated model
                     model = self.model_class(self,
-                                             href='/'.join([self.url, item]).replace('classifications/', 'classification/'),
+                                             href='/'.join([self.url, item]).replace('classifications/',
+                                                                                     'classification/'),
                                              data={self.model_class.primary_key: item})
                 self._models.append(model)
             return self
@@ -244,7 +247,12 @@ class QueryableModelCollection(ModelCollection):
             self.check_version()
             for k, v in self._filter.items():
                 if '[' in v:
-                    self._filter[k] = ast.literal_eval(v)
+                    try:
+                        self._filter[k] = ast.literal_eval(v)
+                    except SyntaxError:
+                        # In case of DSL Queries, we can specify the list in a query
+                        # but this will try to evaluate this as a list and failed as syntax error.
+                        self._filter[k] = v
             self.load(self.client.get(self.url, params=self._filter))
 
         self._is_inflated = True
@@ -310,7 +318,8 @@ class QueryableModelCollection(ModelCollection):
         return self.inflate()
 
     def check_version(self):
-        if (self.model_class.min_version > OLDEST_SUPPORTED_VERSION and self.client.version < self.model_class.min_version):
+        if (
+                self.model_class.min_version > OLDEST_SUPPORTED_VERSION and self.client.version < self.model_class.min_version):
             min_version = utils.version_str(self.model_class.min_version)
             curr_version = utils.version_str(self.client.version)
             raise exceptions.ClientError(message="Cannot access %s in version %s, it was added in "
@@ -326,6 +335,7 @@ class DependentModelCollection(ModelCollection):
     provided by another API response.  There's no lazy-loading here and no way
     to regenerate the collection other than refreshing the parent object.
     """
+
     def __call__(self, *args):
         """Generate the models for this collection.
 
@@ -366,6 +376,13 @@ class DependentModelCollection(ModelCollection):
     def inflate(self):
         self._is_inflated = True
         return self
+
+    def __len__(self):
+        if self._is_inflated:
+            return len(self._models)
+        else:
+            self.inflate()
+            return len(self._models)
 
 
 class Model(object):
@@ -551,7 +568,7 @@ class QueryableModel(Model):
     path = None
     data_key = None
     relationships = {}
-    method = "get"      # To keep track of the method type of each request
+    method = "get"  # To keep track of the method type of each request
 
     def __init__(self, *args, **kwargs):
         self.request = None
@@ -700,3 +717,57 @@ class QueryableModel(Model):
             self.request.wait(**kwargs)
             self.request = None
         return self.inflate()
+
+    def entities_with_relationships(self, attributes=None):
+        """
+        In some cases Atlas does not provide the relationship attributes in
+        referredEntities dictionary. To handle all those corner cases (like searching
+        on the parent type etc. this function verifies if attribute is under referredEntities,
+        otherwise fetch it and store it for further use.
+        :param attributes: A list of relationship attributes.
+        :return: A list of entities, with detailed relationship attributes.
+        """
+
+        def _fix_relationships(client, entities, ref_entities, attrs):
+            rel_attribute_ids = set()
+            for entity in entities:
+                relationship_attrs = entity.relationshipAttributes
+
+                # Only fix the attributes if specified in parameter, else fix all.
+                attrs = attrs or relationship_attrs.keys()
+
+                for attribute in attrs:
+                    rel_attr = relationship_attrs.get(attribute)
+                    if isinstance(rel_attr, list):
+                        for index, item in enumerate(rel_attr):
+                            guid = item.guid if hasattr(item, 'guid') else item.get('guid')
+                            # A check to be on the safe side / and for test cases
+                            if guid:
+                                if guid in ref_entities:
+                                    entity.relationshipAttributes[attribute][index] = ref_entities[guid]
+                                else:
+                                    rel_attribute_ids.add(guid)
+                    if isinstance(rel_attr, dict):
+                        guid = rel_attr.get('guid')
+                        # A check to be on the safe side / and for test cases
+                        if guid:
+                            if guid in ref_entities:
+                                entity.relationshipAttributes[attribute] = ref_entities[guid]
+                            else:
+                                rel_attribute_ids.add(guid)
+
+            if rel_attribute_ids:
+                _rel_attr_collection = client.entity_bulk(guid=list(rel_attribute_ids))
+                # noinspection PyTypeChecker
+                for rel_entities in _rel_attr_collection:
+                    ref_entities.update(dict((rel_entity.guid, rel_entity._data)
+                                             for rel_entity in rel_entities.entities))
+
+                    # Fix remaining entities recursively
+                    entities = _fix_relationships(client, entities, ref_entities, attrs)
+
+            return entities
+
+        if self.entities and isinstance(self.entities, DependentModelCollection):
+            referred_entities = self.referredEntities or dict()
+            return _fix_relationships(self.client, self.entities, referred_entities, attributes)

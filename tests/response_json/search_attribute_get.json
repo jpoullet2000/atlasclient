@@ -49,7 +49,7 @@
   } ],
   "attributes" : {
     "name" : [ "...", "..." ],
-    "values" : [ ]
+    "values" : [["12"], ["34"], ["56"]]
   },
   "fullTextResult" : [ {
     "entity" : {
