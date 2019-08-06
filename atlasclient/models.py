@@ -930,4 +930,4 @@ class AdminMetrics(base.QueryableModel):
     collection_class = AdminMetricsCollection
     path = 'metrics'
     data_key = 'data'
-    fields = ('general', 'general', 'tag', 'entity')
+    fields = ('general', 'tag', 'entity')
