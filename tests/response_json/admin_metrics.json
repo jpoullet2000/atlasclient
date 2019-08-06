@@ -1,0 +1,76 @@
+{
+  "general": {
+    "collectionTime": 1565123782025,
+    "entityCount": 46,
+    "stats": {
+      "Notification:lastMessageProcessedTime": 0,
+      "Notification:currentDayEntityUpdates": 0,
+      "Notification:currentDayFailed": 0,
+      "Notification:currentHourStartTime": 1565121600000,
+      "Notification:previousDayEntityCreates": 0,
+      "Notification:currentHourAvgTime": 0,
+      "Notification:previousHour": 0,
+      "Notification:totalUpdates": 0,
+      "Notification:previousHourEntityUpdates": 0,
+      "Server:statusIndexStore": "connected",
+      "Notification:offsetStart": -1,
+      "Notification:totalAvgTime": 0,
+      "Notification:currentDayEntityDeletes": 0,
+      "Notification:currentHourEntityCreates": 0,
+      "Notification:totalDeletes": 0,
+      "Notification:previousHourEntityDeletes": 0,
+      "Server:startTimeStamp": 1565123587016,
+      "Notification:previousHourEntityCreates": 0,
+      "Notification:currentDayStartTime": 1565049600000,
+      "Server:upTime": "3 min 15 sec",
+      "Notification:currentDay": 0,
+      "Notification:currentHourEntityUpdates": 0,
+      "Notification:currentHour": 0,
+      "Notification:totalFailed": 0,
+      "Notification:currentDayEntityCreates": 0,
+      "Notification:currentHourEntityDeletes": 0,
+      "Server:statusBackendStore": "connected",
+      "Notification:totalCreates": 0,
+      "Notification:previousDayEntityUpdates": 0,
+      "Notification:currentHourFailed": 0,
+      "Notification:currentDayAvgTime": 0,
+      "Notification:previousHourFailed": 0,
+      "Notification:total": 0,
+      "Notification:previousDayEntityDeletes": 0,
+      "Server:activeTimeStamp": 1565123587016,
+      "Notification:previousDay": 0,
+      "Notification:offsetCurrent": 0,
+      "Notification:previousHourAvgTime": 0,
+      "Notification:previousDayFailed": 0,
+      "Notification:previousDayAvgTime": 0
+    },
+    "tagCount": 11,
+    "typeUnusedCount": 57,
+    "typeCount": 153
+  },
+  "tag": {
+    "tagEntities": {
+      "JdbcAccess": 2,
+      "PII": 3,
+      "Log Data": 3,
+      "Metric": 3,
+      "Dimension": 5,
+      "ETL": 3,
+      "Fact": 1
+    }
+  },
+  "entity": {
+    "entityActive": {
+      "StorageDesc": 1,
+      "User": 4,
+      "Table": 8,
+      "Column": 13,
+      "Metadata": 4,
+      "Reader": 8,
+      "View": 2,
+      "DB": 3,
+      "LoadProcess": 3
+    },
+    "entityDeleted": {}
+  }
+}

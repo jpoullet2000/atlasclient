@@ -913,3 +913,21 @@ class SearchSaved(base.QueryableModel):
         self.method = 'put'
         self.load(self.client.put(self.parent.url, data=data))
         return self
+
+
+class AdminMetricsCollection(base.QueryableModelCollection):
+    @property
+    def is_admin_api(self):
+        return True
+
+    def load(self, response):
+        model = self.model_class(self, href=self.url)
+        model.load(response)
+        self._models.append(model)
+
+
+class AdminMetrics(base.QueryableModel):
+    collection_class = AdminMetricsCollection
+    path = 'metrics'
+    data_key = 'data'
+    fields = ('general', 'general', 'tag', 'entity')

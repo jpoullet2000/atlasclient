@@ -119,6 +119,13 @@ def search_saved_update():
     return(response)
 
 
+@pytest.fixture(scope='class')
+def admin_metrics_response():
+    with open('{}/admin_metrics.json'.format(resource_filename(__name__, RESPONSE_JSON_DIR))) as json_data:
+            response = json.load(json_data)
+    return response
+
+
 class TestEntityREST():
     def test_entity_post(self, mocker, atlas_client, entity_guid_response, entity_post_response):
         mocker.patch.object(atlas_client.client, 'get')
@@ -541,5 +548,24 @@ class TestDiscoveryREST():
         result.update(data=search_saved_update)
 
 
+class TestAdminREST:
+    def test_admin_metrics_get(self, mocker, atlas_client, admin_metrics_response):
+        mocker.patch.object(atlas_client.client, 'request')
+        atlas_client.client.request.return_value = admin_metrics_response
 
+        for metrics in atlas_client.admin_metrics:
+            assert hasattr(metrics, 'entity')
+            assert hasattr(metrics, 'general')
+            assert hasattr(metrics, 'tag')
 
+            entity_stats = metrics.entity
+            assert entity_stats['entityDeleted'] == {}
+            assert len(entity_stats['entityActive'].keys()) == 9
+
+            general_stats = metrics.general
+            assert general_stats['collectionTime'] == 1565123782025
+            assert general_stats['entityCount'] == 46
+
+            tag_stats = metrics.tag
+            assert tag_stats['tagEntities']['JdbcAccess'] == 2
+            assert len(tag_stats['tagEntities'].keys()) == 7
