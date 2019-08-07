@@ -18,6 +18,7 @@ The following groups of resources can be accessed:
 - LineageREST
 - RelationshipREST
 - TypesREST
+- AdminREST
 
 Below a few examples to access some of the resources. 
 
@@ -617,3 +618,22 @@ To get typedefs by name::
     type_defs = client.typedef_guid(TYPE_NAME)
     type_defs._data
 
+AdminREST
+---------
+
+Get Admin Metrics
+~~~~~~~~~~~~~~~~~
+
+This endpoint is not yet mentioned in the official atlas documentation, but gives the complete
+statistics available for Atlas >2.x only. Endpoint is `api/atlas/admin/metrics`::
+
+
+    for metrics in client.admin_metrics:
+        # This gives the entities count for both active and deleted entities
+        entity_stats = metrics.entity
+
+        # Provides the general Atlas statistics, about the counts, and different timestamps
+        general_stats = metrics.general
+
+        # Provides a list of tags, along with the count of entities using that tag
+        tag_stats = metrics.tag

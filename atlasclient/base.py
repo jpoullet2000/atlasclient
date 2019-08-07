@@ -230,9 +230,15 @@ class QueryableModelCollection(ModelCollection):
         return self
 
     @property
+    def is_admin_api(self):
+        return False
+
+    @property
     def url(self):
         """The url for this collection."""
-        if self.parent is None:
+        if self.is_admin_api:
+            pieces = [self.client.base_url, 'api', 'atlas', 'admin']
+        elif self.parent is None:
             # TODO: differing API Versions?
             pieces = [self.client.base_url, 'api', 'atlas', 'v2']
         else:

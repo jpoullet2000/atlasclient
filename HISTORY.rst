@@ -2,6 +2,10 @@
 History
 =======
 
+0.1.8 (TBD)
+------------------
+* Add support for Atlas' Admin Metrics REST API
+
 0.1.7 (2019-07-08)
 ------------------
 * Add support for Atlas' DSL Saved Search (#81)
