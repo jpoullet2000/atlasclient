@@ -2,7 +2,7 @@
 History
 =======
 
-0.1.8 (TBD)
+0.1.8 (2019-08-08)
 ------------------
 * Add support for Atlas' Admin Metrics REST API
 
