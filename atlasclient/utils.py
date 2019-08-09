@@ -170,9 +170,9 @@ def make_table_qualified_name(table_name, cluster=None, db=None):
     """
     qualified_name = table_name
     if db and db != DEFAULT_DB_CLUSTER:
-        qualified_name = f'{db}.{qualified_name}'
+        qualified_name = '{}.{}'.format(db, qualified_name)
 
     if cluster and cluster != DEFAULT_DB_CLUSTER:
-        qualified_name = f'{qualified_name}@{cluster}'
+        qualified_name = '{}@{}'.format(qualified_name, cluster)
 
     return qualified_name
