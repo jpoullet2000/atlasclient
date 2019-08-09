@@ -31,7 +31,6 @@ with open(test_requirements_path) as test_requirements_file:
 with open(setup_requirements_path) as setup_requirements_file:
     setup_requirements = setup_requirements_file.readlines()
 
-setup_args = {}
 setup_args = dict(
     name='atlasclient',
     version=version,
@@ -59,7 +58,6 @@ setup_args = dict(
     ],
     test_suite='tests',
     tests_require=test_requirements,
-    #setup_requires=setup_requirements,
 )
 
 setup(**setup_args)

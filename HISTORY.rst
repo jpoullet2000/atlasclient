@@ -2,6 +2,11 @@
 History
 =======
 
+1.0.0 (2019-08-10)
+------------------
+* Adds the helper functions to parse the qualified name
+* Updates the version to 1.x to get some confidence from community as the module is pretty stable now
+
 0.1.8 (2019-08-08)
 ------------------
 * Add support for Atlas' Admin Metrics REST API
