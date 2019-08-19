@@ -14,6 +14,7 @@ Contents:
    installation
    readme
    usage
+   utils
    authors
    contributing
    history
