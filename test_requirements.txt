@@ -1,6 +1,6 @@
 pytest==4.6.3
 pytest_mock>=1.6.3
 pytest_cov>=2.5.1
-tox==3.12.1
+tox==4.19.0
 tox-travis==0.12
 coveralls==1.8.2
